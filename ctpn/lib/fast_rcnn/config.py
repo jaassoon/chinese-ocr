@@ -16,8 +16,9 @@ Most tools in $ROOT/tools take a --cfg option to specify an override file.
 
 import os
 import os.path as osp
-import numpy as np
 from time import strftime, localtime
+
+import numpy as np
 from easydict import EasyDict as edict
 
 __C = edict()
@@ -62,13 +63,12 @@ __C.TRAIN.SCALES_BASE = (0.25, 0.5, 1.0, 2.0, 3.0)
 # __C.TRAIN.SCALES_BASE = (1.0,)
 
 # parameters for ROI generating
-#__C.TRAIN.SPATIAL_SCALE = 0.0625
+# __C.TRAIN.SPATIAL_SCALE = 0.0625
 __C.TRAIN.KERNEL_SIZE = 5
 
 # Aspect ratio to use during training
 # __C.TRAIN.ASPECTS = (1, 0.75, 0.5, 0.25)
-__C.TRAIN.ASPECTS= (1,)
-
+__C.TRAIN.ASPECTS = (1,)
 
 # Scales to use during training (can list multiple scales)
 # Each scale is the pixel size of an image's shortest side
@@ -201,14 +201,13 @@ __C.TEST.PROPOSAL_METHOD = 'selective_search'
 ## NMS threshold used on RPN proposals
 __C.TEST.RPN_NMS_THRESH = 0.7
 ## Number of top scoring boxes to keep before apply NMS to RPN proposals
-#__C.TEST.RPN_PRE_NMS_TOP_N = 6000
+# __C.TEST.RPN_PRE_NMS_TOP_N = 6000
 __C.TEST.RPN_PRE_NMS_TOP_N = 12000
 ## Number of top scoring boxes to keep after applying NMS to RPN proposals
 __C.TEST.RPN_POST_NMS_TOP_N = 1000
-#__C.TEST.RPN_POST_NMS_TOP_N = 2000
+# __C.TEST.RPN_POST_NMS_TOP_N = 2000
 # Proposal height and width both need to be greater than RPN_MIN_SIZE (at orig image scale)
 __C.TEST.RPN_MIN_SIZE = 8
-
 
 #
 # MISC
@@ -219,7 +218,7 @@ __C.TEST.RPN_MIN_SIZE = 8
 # coordinates. If DEDUP_BOXES > 0, then DEDUP_BOXES is used as the scale factor
 # for identifying duplicate boxes.
 # 1/16 is correct for {Alex,Caffe}Net, VGG_CNN_M_1024, and VGG16
-__C.DEDUP_BOXES = 1./16.
+__C.DEDUP_BOXES = 1. / 16.
 
 # Pixel mean values (BGR order) as a (1, 1, 3) array
 # We use the same pixel mean for all networks even though it's not exactly what
@@ -227,7 +226,7 @@ __C.DEDUP_BOXES = 1./16.
 __C.PIXEL_MEANS = np.array([[[102.9801, 115.9465, 122.7717]]])
 
 # For reproducibility
-#__C.RNG_SEED = 3
+# __C.RNG_SEED = 3
 __C.RNG_SEED = 3
 
 # A small number that's used many times
@@ -255,6 +254,7 @@ __C.USE_GPU_NMS = True
 # Default GPU device id
 __C.GPU_ID = 0
 
+
 def get_output_dir(imdb, weights_filename):
     """Return the directory where experimental artifacts are placed.
     If the directory does not exist, it is created.
@@ -268,17 +268,19 @@ def get_output_dir(imdb, weights_filename):
         os.makedirs(outdir)
     return outdir
 
+
 def get_log_dir(imdb):
     """Return the directory where experimental artifacts are placed.
     If the directory does not exist, it is created.
     A canonical path is built using the name from an imdb and a network
     (if not None).
     """
-    log_dir = osp.abspath(\
+    log_dir = osp.abspath( \
         osp.join(__C.ROOT_DIR, 'logs', __C.LOG_DIR, imdb.name, strftime("%Y-%m-%d-%H-%M-%S", localtime())))
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     return log_dir
+
 
 def _merge_a_into_b(a, b):
     """Merge config dictionary a into config dictionary b, clobbering the
@@ -299,8 +301,8 @@ def _merge_a_into_b(a, b):
                 v = np.array(v, dtype=b[k].dtype)
             else:
                 raise ValueError(('Type mismatch ({} vs. {}) '
-                                'for config key: {}').format(type(b[k]),
-                                                            type(v), k))
+                                  'for config key: {}').format(type(b[k]),
+                                                               type(v), k))
 
         # recursively merge dicts
         if type(v) is edict:
@@ -312,6 +314,7 @@ def _merge_a_into_b(a, b):
         else:
             b[k] = v
 
+
 def cfg_from_file(filename):
     """Load a config file and merge it into the default options."""
     import yaml
@@ -319,6 +322,7 @@ def cfg_from_file(filename):
         yaml_cfg = edict(yaml.load(f))
 
     _merge_a_into_b(yaml_cfg, __C)
+
 
 def cfg_from_list(cfg_list):
     """Set config keys via list (e.g., from command line)."""
@@ -339,5 +343,5 @@ def cfg_from_list(cfg_list):
             value = v
         assert type(value) == type(d[subkey]), \
             'type {} does not match original type {}'.format(
-            type(value), type(d[subkey]))
+                type(value), type(d[subkey]))
         d[subkey] = value

@@ -2,19 +2,19 @@
 # encoding: utf-8
 
 import random
+import sys
+
+import lmdb
+import numpy as np
+import six
 import torch
+import torchvision.transforms as transforms
+from PIL import Image
 from torch.utils.data import Dataset
 from torch.utils.data import sampler
-import torchvision.transforms as transforms
-import lmdb
-import six
-import sys
-from PIL import Image
-import numpy as np
 
 
 class lmdbDataset(Dataset):
-
     def __init__(self, root=None, transform=None, target_transform=None):
         self.env = lmdb.open(
             root,
@@ -66,7 +66,6 @@ class lmdbDataset(Dataset):
 
 
 class resizeNormalize(object):
-
     def __init__(self, size, interpolation=Image.BILINEAR):
         self.size = size
         self.interpolation = interpolation
@@ -80,7 +79,6 @@ class resizeNormalize(object):
 
 
 class randomSequentialSampler(sampler.Sampler):
-
     def __init__(self, data_source, batch_size):
         self.num_samples = len(data_source)
         self.batch_size = batch_size
@@ -106,7 +104,6 @@ class randomSequentialSampler(sampler.Sampler):
 
 
 class alignCollate(object):
-
     def __init__(self, imgH=32, imgW=128, keep_ratio=False, min_ratio=1):
         self.imgH = imgH
         self.imgW = imgW

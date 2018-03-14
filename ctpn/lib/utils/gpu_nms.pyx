@@ -8,6 +8,16 @@
 import numpy as np
 cimport numpy as np
 
+cimport
+
+cimport
+numpy as np
+cimport
+import numpy as np
+
+numpy as np
+import numpy as np
+
 assert sizeof(int) == sizeof(np.int32_t)
 
 cdef extern from "gpu_nms.hpp":

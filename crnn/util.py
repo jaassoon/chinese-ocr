@@ -3,28 +3,27 @@
 
 import torch
 import torch.nn as nn
-import collections
 
 
 class strLabelConverter(object):
-
     def __init__(self, alphabet):
         self.alphabet = alphabet + u'-'  # for `-1` index
         self.dict = {}
         for i, char in enumerate(alphabet):
             # NOTE: 0 is reserved for 'blank' required by wrap_ctc
             self.dict[char] = i + 1
+
     def encode(self, text, depth=0):
         """Support batch or single str."""
         length = []
-        result=[]
+        result = []
         for str in text:
-            str = unicode(str,"utf8")
+            str = unicode(str, "utf8")
             length.append(len(str))
             for char in str:
-               #print(char)
-               index = self.dict[char]
-               result.append(index)
+                # print(char)
+                index = self.dict[char]
+                result.append(index)
         text = result
         return (torch.IntTensor(text), torch.IntTensor(length))
 
@@ -52,7 +51,6 @@ class strLabelConverter(object):
 
 
 class averager(object):
-
     def __init__(self):
         self.reset()
 

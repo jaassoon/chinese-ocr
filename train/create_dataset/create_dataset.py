@@ -1,8 +1,11 @@
 import os
-import lmdb # install lmdb by "pip install lmdb"
+
 import cv2
+import lmdb  # install lmdb by "pip install lmdb"
 import numpy as np
-#from genLineText import GenTextImage
+
+
+# from genLineText import GenTextImage
 
 def checkImageIsValid(imageBin):
     if imageBin is None:
@@ -19,8 +22,8 @@ def checkImageIsValid(imageBin):
 
 def writeCache(env, cache):
     with env.begin(write=True) as txn:
-        for k, v in cache.iteritems():
-            txn.put(k, v)
+        for k, v in cache.items():
+            txn.put(k.encode(), v)
 
 
 def createDataset(outputPath, imagePathList, labelList, lexiconList=None, checkValid=True):
@@ -34,21 +37,21 @@ def createDataset(outputPath, imagePathList, labelList, lexiconList=None, checkV
         lexiconList   : (optional) list of lexicon lists
         checkValid    : if true, check the validity of every image
     """
-    #print (len(imagePathList) , len(labelList))
-    assert(len(imagePathList) == len(labelList))
+    # print (len(imagePathList) , len(labelList))
+    assert (len(imagePathList) == len(labelList))
     nSamples = len(imagePathList)
-    print '...................'
+    print('...................')
     env = lmdb.open(outputPath, map_size=1099511627776)
-    
+
     cache = {}
     cnt = 1
-    for i in xrange(nSamples):
+    for i in range(nSamples):
         imagePath = imagePathList[i]
         label = labelList[i]
         if not os.path.exists(imagePath):
             print('%s does not exist' % imagePath)
             continue
-        with open(imagePath, 'r') as f:
+        with open(imagePath, 'rb') as f:
             imageBin = f.read()
         if checkValid:
             if not checkImageIsValid(imageBin):
@@ -58,54 +61,50 @@ def createDataset(outputPath, imagePathList, labelList, lexiconList=None, checkV
         imageKey = 'image-%09d' % cnt
         labelKey = 'label-%09d' % cnt
         cache[imageKey] = imageBin
-        cache[labelKey] = label
+        cache[labelKey] = label.encode()
         if lexiconList:
             lexiconKey = 'lexicon-%09d' % cnt
-            cache[lexiconKey] = ' '.join(lexiconList[i])
+            cache[lexiconKey] = ' '.join(lexiconList[i]).encode()
         if cnt % 1000 == 0:
             writeCache(env, cache)
             cache = {}
             print('Written %d / %d' % (cnt, nSamples))
         cnt += 1
-    nSamples = cnt-1
-    cache['num-samples'] = str(nSamples)
+    nSamples = cnt - 1
+    cache['num-samples'] = str(nSamples).encode()
     writeCache(env, cache)
     print('Created dataset with %d samples' % nSamples)
 
 
 def read_text(path):
-    
     with open(path) as f:
         text = f.read()
     text = text.strip()
-    
+
     return text
 
 
 import glob
+
 if __name__ == '__main__':
-    
+
     ##lmdb 输出目录
     outputPath = '../data/lmdb/train'
-    
+
     path = '../data/dataline/*.jpg'
     imagePathList = glob.glob(path)
-    print '------------',len(imagePathList),'------------'
+    print('------------', len(imagePathList), '------------')
     imgLabelLists = []
     for p in imagePathList:
         try:
-           imgLabelLists.append((p,read_text(p.replace('.jpg','.txt'))))
+            imgLabelLists.append((p, read_text(p.replace('.jpg', '.txt'))))
         except:
             continue
-            
-    #imgLabelList = [ (p,read_text(p.replace('.jpg','.txt'))) for p in imagePathList]
+
+    # imgLabelList = [ (p,read_text(p.replace('.jpg','.txt'))) for p in imagePathList]
     ##sort by lebelList 
-    imgLabelList = sorted(imgLabelLists,key = lambda x:len(x[1]))
-    imgPaths = [ p[0] for p in imgLabelList]
-    txtLists = [ p[1] for p in imgLabelList]
-    
+    imgLabelList = sorted(imgLabelLists, key=lambda x: len(x[1]))
+    imgPaths = [p[0] for p in imgLabelList]
+    txtLists = [p[1] for p in imgLabelList]
+
     createDataset(outputPath, imgPaths, txtLists, lexiconList=None, checkValid=True)
-
-
-
-

@@ -1,27 +1,30 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+
 import argparse
+import os
 import random
+
+import dataset
+# Alphabet = [e.encode('utf-8') for e in alphabet]
+import models.crnn as crnn
+import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torch.utils.data
-from torch.autograd import Variable
-import numpy as np
-from warpctc_pytorch import CTCLoss
-import os
 import utils
-import dataset
 from keys import alphabet
-#Alphabet = [e.encode('utf-8') for e in alphabet]
-import models.crnn as crnn
-#with open('../run/char.txt') as f:
+from torch.autograd import Variable
+from warpctc_pytorch import CTCLoss
+
+# with open('../run/char.txt') as f:
 #    newChars = f.read().strip().decode('utf-8')
-#alphabet += u''.join(list(set(newChars) - set(alphabet)))
+# alphabet += u''.join(list(set(newChars) - set(alphabet)))
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--trainroot', help='path to dataset',default='../data/lmdb/train')
-parser.add_argument('--valroot', help='path to dataset',default='../data/lmdb/val')
+parser.add_argument('--trainroot', help='path to dataset', default='../data/lmdb/train')
+parser.add_argument('--valroot', help='path to dataset', default='../data/lmdb/val')
 parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
 parser.add_argument('--batchSize', type=int, default=128, help='input batch size')
 parser.add_argument('--imgH', type=int, default=32, help='the height of the input image to network')
@@ -32,10 +35,10 @@ parser.add_argument('--lr', type=float, default=0.005, help='learning rate for C
 parser.add_argument('--beta1', type=float, default=0.5, help='beta1 for adam. default=0.5')
 parser.add_argument('--cuda', action='store_true', help='enables cuda')
 parser.add_argument('--ngpu', type=int, default=1, help='number of GPUs to use')
-parser.add_argument('--crnn', help="path to crnn (to continue training)",default='../pretrain-models/netCRNN.pth')
-#parser.add_argument('--crnn', help="path to crnn (to continue training)",default='')
+parser.add_argument('--crnn', help="path to crnn (to continue training)", default='../pretrain-models/netCRNN.pth')
+# parser.add_argument('--crnn', help="path to crnn (to continue training)",default='')
 parser.add_argument('--alphabet', default=alphabet)
-parser.add_argument('--experiment', help='Where to store samples and models',default='./save_model')
+parser.add_argument('--experiment', help='Where to store samples and models', default='./save_model')
 parser.add_argument('--displayInterval', type=int, default=50, help='Interval to be displayed')
 parser.add_argument('--n_test_disp', type=int, default=1000, help='Number of samples to display when test')
 parser.add_argument('--valInterval', type=int, default=50, help='Interval to be displayed')
@@ -46,7 +49,7 @@ parser.add_argument('--keep_ratio', action='store_true', help='whether to keep r
 parser.add_argument('--random_sample', action='store_true', help='whether to sample the dataset with random sampler')
 opt = parser.parse_args()
 print(opt)
-ifUnicode=True
+ifUnicode = True
 if opt.experiment is None:
     opt.experiment = 'expr'
 os.system('mkdir {0}'.format(opt.experiment))
@@ -94,6 +97,7 @@ def weights_init(m):
     elif classname.find('BatchNorm') != -1:
         m.weight.data.normal_(1.0, 0.02)
         m.bias.data.fill_(0)
+
 
 crnn = crnn.CRNN(opt.imgH, nc, nclass, nh, ngpu)
 crnn.apply(weights_init)
@@ -151,7 +155,7 @@ def val(net, dataset, criterion, max_iter=2):
         batch_size = cpu_images.size(0)
         utils.loadData(image, cpu_images)
         if ifUnicode:
-             cpu_texts = [ clean_txt(tx.decode('utf-8'))  for tx in cpu_texts]
+            cpu_texts = [clean_txt(tx.decode('utf-8')) for tx in cpu_texts]
         t, l = converter.encode(cpu_texts)
         utils.loadData(text, t)
         utils.loadData(length, l)
@@ -170,13 +174,14 @@ def val(net, dataset, criterion, max_iter=2):
                 n_correct += 1
 
     raw_preds = converter.decode(preds.data, preds_size.data, raw=True)[:opt.n_test_disp]
-    #for raw_pred, pred, gt in zip(raw_preds, sim_preds, cpu_texts):
-        #print((pred, gt))
-        #print 
+    # for raw_pred, pred, gt in zip(raw_preds, sim_preds, cpu_texts):
+    # print((pred, gt))
+    # print
     accuracy = n_correct / float(max_iter * opt.batchSize)
     testLoss = loss_avg.val()
-    #print('Test loss: %f, accuray: %f' % (testLoss, accuracy))
-    return testLoss,accuracy
+    # print('Test loss: %f, accuray: %f' % (testLoss, accuracy))
+    return testLoss, accuracy
+
 
 def clean_txt(txt):
     """
@@ -185,17 +190,18 @@ def clean_txt(txt):
     newTxt = u''
     for t in txt:
         if t in alphabet:
-            newTxt+=t
+            newTxt += t
         else:
-            newTxt+=u' '
+            newTxt += u' '
     return newTxt
-    
-def trainBatch(net, criterion, optimizer,flage=False):
+
+
+def trainBatch(net, criterion, optimizer, flage=False):
     data = train_iter.next()
-    cpu_images, cpu_texts = data##decode utf-8 to unicode
+    cpu_images, cpu_texts = data  ##decode utf-8 to unicode
     if ifUnicode:
-        cpu_texts = [ clean_txt(tx.decode('utf-8'))  for tx in cpu_texts]
-        
+        cpu_texts = [clean_txt(tx.decode('utf-8')) for tx in cpu_texts]
+
     batch_size = cpu_images.size(0)
     utils.loadData(image, cpu_images)
     t, l = converter.encode(cpu_texts)
@@ -213,10 +219,11 @@ def trainBatch(net, criterion, optimizer,flage=False):
     optimizer.step()
     return cost
 
-num =0
+
+num = 0
 lasttestLoss = 10000
 testLoss = 10000
-import os
+
 
 def delete(path):
     """
@@ -224,51 +231,49 @@ def delete(path):
     """
     import os
     import glob
-    paths = glob.glob(path+'/*.pth')
+    paths = glob.glob(path + '/*.pth')
     for p in paths:
         os.remove(p)
-    
-    
-    
-    
-numLoss = 0##判断训练参数是否下降    
-    
+
+
+numLoss = 0  ##判断训练参数是否下降
+
 for epoch in range(opt.niter):
     train_iter = iter(train_loader)
     i = 0
     while i < len(train_loader):
-        #print('The step{} ........\n'.format(i))
+        # print('The step{} ........\n'.format(i))
         for p in crnn.parameters():
             p.requires_grad = True
         crnn.train()
-        #if numLoss>50:
+        # if numLoss>50:
         #    cost = trainBatch(crnn, criterion, optimizer,True)
         #    numLoss = 0
-        #else:
+        # else:
         cost = trainBatch(crnn, criterion, optimizer)
         loss_avg.add(cost)
         i += 1
 
-        #if i % opt.displayInterval == 0:
+        # if i % opt.displayInterval == 0:
         #    print('[%d/%d][%d/%d] Loss: %f' %
         #          (epoch, opt.niter, i, len(train_loader), loss_avg.val()))
         #    loss_avg.reset()
 
         if i % opt.valInterval == 0:
-            testLoss,accuracy = val(crnn, test_dataset, criterion)
-            #print('Test loss: %f, accuray: %f' % (testLoss, accuracy))
-            print("epoch:{},step:{},Test loss:{},accuracy:{},train loss:{}".format(epoch,num,testLoss,accuracy,loss_avg.val()))
+            testLoss, accuracy = val(crnn, test_dataset, criterion)
+            # print('Test loss: %f, accuray: %f' % (testLoss, accuracy))
+            print("epoch:{},step:{},Test loss:{},accuracy:{},train loss:{}".format(epoch, num, testLoss, accuracy,
+                                                                                   loss_avg.val()))
             loss_avg.reset()
         # do checkpointing
-        num +=1
-        #lasttestLoss = min(lasttestLoss,testLoss)
-        
-        if lasttestLoss >testLoss:
-             print("The step {},last lost:{}, current: {},save model!".format(num,lasttestLoss,testLoss))
-             lasttestLoss = testLoss
-             #delete(opt.experiment)##删除历史模型
-             torch.save(crnn.state_dict(), '{}/netCRNN.pth'.format(opt.experiment))
-             numLoss = 0
+        num += 1
+        # lasttestLoss = min(lasttestLoss,testLoss)
+
+        if lasttestLoss > testLoss:
+            print("The step {},last lost:{}, current: {},save model!".format(num, lasttestLoss, testLoss))
+            lasttestLoss = testLoss
+            # delete(opt.experiment)##删除历史模型
+            torch.save(crnn.state_dict(), '{}/netCRNN.pth'.format(opt.experiment))
+            numLoss = 0
         else:
-            numLoss+=1
-            
+            numLoss += 1

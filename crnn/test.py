@@ -1,33 +1,27 @@
-#coding:utf-8
+# coding:utf-8
 
-import random
-import torch
-import torch.backends.cudnn as cudnn
-import torch.optim as optim
-import torch.utils.data
-from torch.autograd import Variable 
-import numpy as np
-import os
-import util
 import dataset
-from PIL import Image
-import models.crnn as crnn
 import keys
+import models.crnn as crnn
+import torch.utils.data
+import util
+from PIL import Image
+from torch.autograd import Variable
+
 alphabet = keys.alphabet
 print(len(alphabet))
 raw_input('\ninput:')
 converter = util.strLabelConverter(alphabet)
-model = crnn.CRNN(32, 1, len(alphabet)+1, 256, 1).cuda()
+model = crnn.CRNN(32, 1, len(alphabet) + 1, 256, 1).cuda()
 path = './samples/netCRNN63.pth'
 model.load_state_dict(torch.load(path))
 print(model)
 
-
 while 1:
     im_name = raw_input("\nplease input file name:")
-    im_path =  "./img/" + im_name
+    im_path = "./img/" + im_name
     image = Image.open(im_path).convert('L')
-    scale = image.size[1]*1.0 / 32
+    scale = image.size[1] * 1.0 / 32
     w = image.size[0] / scale
     w = int(w)
     print(w)
@@ -45,4 +39,3 @@ while 1:
     raw_pred = converter.decode(preds.data, preds_size.data, raw=True)
     sim_pred = converter.decode(preds.data, preds_size.data, raw=False)
     print('%-20s => %-20s' % (raw_pred, sim_pred))
-

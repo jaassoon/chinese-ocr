@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
-#!/usr/bin/python
+# !/usr/bin/python
 # encoding: utf-8
 
 import random
+import sys
+
+import lmdb
+import numpy as np
+import six
 import torch
+import torchvision.transforms as transforms
+from PIL import Image
 from torch.utils.data import Dataset
 from torch.utils.data import sampler
-import torchvision.transforms as transforms
-import lmdb
-import six
-import sys
-from PIL import Image
-import numpy as np
 
 
 class lmdbDataset(Dataset):
-
     def __init__(self, root=None, transform=None, target_transform=None):
         self.env = lmdb.open(
             root,
@@ -30,7 +30,8 @@ class lmdbDataset(Dataset):
             sys.exit(0)
 
         with self.env.begin(write=False) as txn:
-            nSamples = int(txn.get('num-samples'))
+            nSamples = int(txn.get('num-samples'.encode()))
+            print("nSamples:{}".format(nSamples))
             self.nSamples = nSamples
 
         self.transform = transform
@@ -44,16 +45,17 @@ class lmdbDataset(Dataset):
         index += 1
         with self.env.begin(write=False) as txn:
             img_key = 'image-%09d' % index
-            imgbuf = txn.get(img_key)
+            imgbuf = txn.get(img_key.encode())
 
             buf = six.BytesIO()
             buf.write(imgbuf)
             buf.seek(0)
             try:
                 img = Image.open(buf).convert('L')
+                # img.save("1111111111.jpg")
             except IOError:
                 print('Corrupted image for %d' % index)
-                if index>self.nSamples-1:
+                if index > self.nSamples - 1:
                     index = 0
                 return self[index + 1]
 
@@ -61,17 +63,15 @@ class lmdbDataset(Dataset):
                 img = self.transform(img)
 
             label_key = 'label-%09d' % index
-            label = str(txn.get(label_key))
+            label = str(txn.get(label_key.encode()), 'utf-8')
 
             if self.target_transform is not None:
                 label = self.target_transform(label)
-
+        # print(img,label)
         return (img, label)
 
 
-
 class resizeNormalize(object):
-
     def __init__(self, size, interpolation=Image.BILINEAR):
         self.size = size
         self.interpolation = interpolation
@@ -85,7 +85,6 @@ class resizeNormalize(object):
 
 
 class randomSequentialSampler(sampler.Sampler):
-
     def __init__(self, data_source, batch_size):
         self.num_samples = len(data_source)
         self.batch_size = batch_size
@@ -111,7 +110,6 @@ class randomSequentialSampler(sampler.Sampler):
 
 
 class alignCollate(object):
-
     def __init__(self, imgH=32, imgW=100, keep_ratio=False, min_ratio=1):
         self.imgH = imgH
         self.imgW = imgW

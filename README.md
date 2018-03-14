@@ -4,7 +4,9 @@
 
 - [x]  文字方向检测 0、90、180、270度检测 
 - [x] 文字检测 后期将切换到keras版本文本检测 实现keras端到端的文本检测及识别
-- [x] 不定长OCR识别 
+- [x] 不定长OCR识别
+- [x] 增加python3.6 支持
+
 
 ## 环境部署
 ``` Bash
@@ -12,6 +14,8 @@
 sh setup.sh
 ##CPU环境
 sh setup-cpu.sh
+##CPU python3环境
+sh setup-python3.sh
 ```
 
 # 模型训练

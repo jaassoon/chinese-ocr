@@ -1,5 +1,6 @@
-import numpy as np
 import cv2
+import numpy as np
+
 from .config import cfg
 from ..utils.blob import im_list_to_blob
 
@@ -32,7 +33,7 @@ def _get_image_blob(im):
 
 
 def _get_blobs(im, rois):
-    blobs = {'data' : None, 'rois' : None}
+    blobs = {'data': None, 'rois': None}
     blobs['data'], im_scale_factors = _get_image_blob(im)
     return blobs, im_scale_factors
 
@@ -48,11 +49,11 @@ def test_ctpn(sess, net, im, boxes=None):
     if cfg.TEST.HAS_RPN:
         feed_dict = {net.data: blobs['data'], net.im_info: blobs['im_info'], net.keep_prob: 1.0}
 
-    rois = sess.run([net.get_output('rois')[0]],feed_dict=feed_dict)
-    rois=rois[0]
+    rois = sess.run([net.get_output('rois')[0]], feed_dict=feed_dict)
+    rois = rois[0]
 
     scores = rois[:, 0]
     if cfg.TEST.HAS_RPN:
         assert len(im_scales) == 1, "Only single-image batch implemented"
         boxes = rois[:, 1:5] / im_scales[0]
-    return scores,boxes
+    return scores, boxes

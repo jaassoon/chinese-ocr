@@ -1,15 +1,15 @@
 #!/usr/bin/python
 # encoding: utf-8
 
+import collections
+
 import torch
 import torch.nn as nn
-import collections
 
 
 class strLabelConverter(object):
-
     def __init__(self, alphabet):
-        self.alphabet = alphabet+ u'-'  # for `-1` index
+        self.alphabet = alphabet + u'-'  # for `-1` index
 
         self.dict = {}
         for i, char in enumerate(alphabet):
@@ -21,15 +21,15 @@ class strLabelConverter(object):
         if isinstance(text, str):
             text = [self.dict[char.lower()] for char in text]
             length = [len(text)]
-            
+
         if isinstance(text, str):
-            text = [self.dict.get(char,0) for char in text]
+            text = [self.dict.get(char, 0) for char in text]
             length = [len(text)]
-         ######## add for unicode 
+            ######## add for unicode
         elif isinstance(text, unicode):
-            text = [self.dict.get(char,self.dict[u'-']) for char in text]
+            text = [self.dict.get(char, self.dict[u'-']) for char in text]
             length = [len(text)]
-            
+
         elif isinstance(text, collections.Iterable):
             length = [len(s) for s in text]
             text = ''.join(text)
@@ -63,7 +63,6 @@ class strLabelConverter(object):
 
 
 class averager(object):
-
     def __init__(self):
         self.reset()
 
