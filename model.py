@@ -76,7 +76,7 @@ def dumpRotateImage(img, degree, pt1, pt2, pt3, pt4):
     return imgOut
 
 
-def model(img, model='keras', adjust=False, detectAngle=False):
+def model(img, model='keras', adjust=False, detectAngle=False,im_name='img_'):
     """
     @@param:img,
     @@param:model,选择的ocr模型，支持keras\pytorch版本

@@ -11,7 +11,7 @@ if __name__ =='__main__':
       im = Image.open(im_name)
       img = np.array(im.convert('RGB'))
       t = time.time()
-      result,img,angle = model.model(im_name,img,model='keras')
+      result,img,angle = model.model(img,model='keras',im_name=im_name)
       print("It takes time:{}s".format(time.time()-t))
       print(im_name+"---------------------------------------")
       for key in result:
