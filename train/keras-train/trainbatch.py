@@ -88,7 +88,7 @@ for i in range(3):
             if crrentLoss < loss:
                 loss = crrentLoss
                 path = 'save_model/model{}.h5'.format(loss)
-                print("save model:".format(path))
+                print("save model:{}".format(path))
                 basemodel.save(path)
 
         j += 1
