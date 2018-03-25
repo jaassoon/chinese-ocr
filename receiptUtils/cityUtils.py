@@ -10,11 +10,11 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city']='宮城県'
     elif(tmpResult.find('香川')>-1):
         resultMap['2_city']='香川県'
-    elif(tmpResult.find('爱知')>-1):
+    elif(tmpResult.find('愛知')>-1):
         resultMap['2_city']='愛知県'
     elif(tmpResult.find('三重')>-1):
         resultMap['2_city']='三重県'
-    elif(tmpResult.find('歧阜')>-1):
+    elif(tmpResult.find('歧阜')>-1):#FIXME
         resultMap['2_city']='岐阜県'
     elif(tmpResult.find('山口')>-1):
         resultMap['2_city']='山口県'

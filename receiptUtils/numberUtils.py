@@ -26,5 +26,6 @@ def numberReplacement(tmpResult):
       .replace(',', '')\
       .replace('，', '')\
       .replace('、', '')\
+      .replace('\’', '')\
       .replace(' ','')
   return tmpResult
