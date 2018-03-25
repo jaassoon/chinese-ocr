@@ -1,7 +1,7 @@
 #coding:utf-8
 def getCity(tmpResult,resultMap):
     print('input city {}'.format(tmpResult))
-    tmpResult=tmpResult.replace(',','').replace('，','')
+    tmpResult=tmpResult.replace(',','').replace('，','').replace('\'','')
     if(tmpResult.find('兵')==0):
         resultMap['2_city']='兵庫県'
     elif(tmpResult.find('京都府')>-1):
@@ -34,7 +34,13 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city']='神奈川県'
     elif(tmpResult.find('京都')>0):
         resultMap['2_city']='東京都'
+    elif(tmpResult.find('鹿')>0):
+        resultMap['2_city']='鹿児島県'
+    elif(tmpResult.find('和歌山')>0):
+        resultMap['2_city']='和歌山県'
     elif(tmpResult.find('大')==0 and tmpResult.find('府')>0):
         resultMap['2_city'] = '大阪府'
+    else:
+        resultMap['2_city'] = tmpResult[:3]
     print('output city {}'.format(resultMap['2_city']))
     return resultMap
