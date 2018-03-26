@@ -19,6 +19,9 @@ def getTotalPrice(sim_pred,resultMap,i):
       totalFlg=True
     # if(totalFlg and resultMap['pos_staff']>0):
     #   resultMap['6_category']=i-resultMap['pos_staff']
-  if(int(resultMap['7_total'])>0):
-    print('output totalPrice {}'.format(resultMap['7_total']))
+  try:
+    if(int(resultMap['7_total'])>0):
+      print('output totalPrice {}'.format(resultMap['7_total']))
+  except:
+    print('exception for resultMap[7_total]={}'.format(resultMap['7_total']))
   return resultMap

@@ -23,9 +23,11 @@ def numberReplacement(tmpResult):
       .replace('月', '9')\
       .replace('g', '9')\
       .replace(':', '')\
+      .replace('。', '')\
       .replace(',', '')\
       .replace('，', '')\
       .replace('、', '')\
-      .replace('\’', '')\
+      .replace('\'', '')\
+      .strip('\'')\
       .replace(' ','')
   return tmpResult
