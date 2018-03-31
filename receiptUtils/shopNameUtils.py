@@ -12,5 +12,4 @@ def getShopName(tmpResult,resultMap):
     # or tmpResult.find('am')>-1 \
     ):
       resultMap['1_shopName'] = 'サークルK'
-  print('output shopName {}'.format(resultMap['1_shopName']))
-  return resultMap
+  print('output shopName------------- {}'.format(resultMap['1_shopName']))

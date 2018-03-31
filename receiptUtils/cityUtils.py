@@ -1,4 +1,7 @@
 #coding:utf-8
+citys = [
+'三重県','栃木県','福岡県','兵庫県','宮崎県','千葉県','奈良県','静岡県','大分県','岐阜県','埼玉県','京都府','沖縄県','北海道','宮城県','山口県','滋賀県','熊本県','愛媛県','愛知県','長野県','広島県','富山県','長崎県','香川県','鳥取県','石川県','茨城県','高知県','青森県','秋田県','岡山県','福井県','岩手県','新潟県','山形県','佐賀県','群馬県','福島県','島根県','徳島県','山梨県','東京都','大阪府','鹿児島県','神奈川県','和歌山県'
+]
 def getCity(tmpResult,resultMap):
     print('input city {}'.format(tmpResult))
     tmpResult=tmpResult.strip().replace(',','').replace('，','').replace('\'','')
@@ -41,6 +44,7 @@ def getCity(tmpResult,resultMap):
     elif(tmpResult.find('ナ阪')>-1 or (tmpResult.find('大')==0 and tmpResult.find('府')>0)):
         resultMap['2_city'] = '大阪府'
     else:
-        resultMap['2_city'] = tmpResult[:3]
-    print('output city {}'.format(resultMap['2_city']))
-    return resultMap
+        if(tmpResult[:3] in citys):
+          resultMap['2_city'] = tmpResult[:3]
+    if(resultMap['2_city'] == tmpResult[:3]):
+      print('output city {}'.format(resultMap['2_city']))

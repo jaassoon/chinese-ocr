@@ -6,11 +6,11 @@ def getTotalPrice(sim_pred,resultMap,i):
   print('input_{} totalPrice {}'.format(i,sim_pred))
   resultMap['pos_total']=i
   if(sim_pred.find('半')>-1):
-    sim_pred=sim_pred[sim_pred.find('半'):-1]
+    sim_pred=sim_pred[sim_pred.find('半'):]
   elif(sim_pred.find('羊')>-1):
-    sim_pred=sim_pred[sim_pred.find('羊'):-1]
+    sim_pred=sim_pred[sim_pred.find('羊'):]
   elif(sim_pred.find('洋')>-1):
-    sim_pred=sim_pred[sim_pred.find('洋'):-1]
+    sim_pred=sim_pred[sim_pred.find('洋'):]
   else:
     sim_pred=''
 
