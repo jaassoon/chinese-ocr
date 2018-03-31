@@ -19,7 +19,7 @@ def getCategory(sim_pred,resultMap,i):
     print('output category {}'.format(resultMap['6_category']))
 
 def getCategorySuffix(tmpResult,resultMap,key,tmpDict):
-  if(tmpDict['tax']>0):
+  if(tmpDict['tax']>0 and key>tmpDict['tax']-4):
     return
   if(tmpDict['year']>=key):
     return

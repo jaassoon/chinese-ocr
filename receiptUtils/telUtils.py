@@ -13,5 +13,5 @@ def getTel(tmpResult,resultMap):
     resultMap['3_tel'] = tmpResult
   elif(len(resultMap['3_tel'])<len(tmpResult)):
     resultMap['3_tel'] = tmpResult
-  if(resultMap['3_tel']==tmpResult):
+  if(resultMap['3_tel']==tmpResult and len(tmpResult)>6):
     print('output tel------------- {}'.format(tmpResult))
