@@ -5,6 +5,7 @@ def convertFromStr(tmpResult):
 
 def numberReplacement(tmpResult):
   tmpResult = tmpResult\
+      .replace('の', '0') \
       .replace('G', '0') \
       .replace('l', '1') \
       .replace(']', '1') \

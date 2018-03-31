@@ -1,5 +1,5 @@
 #coding:utf-8
-import datetime
+import datetime,re
 from receiptUtils import numberUtils
 
 def getTimeStr(sim_pred,resultMap,i):
@@ -7,57 +7,97 @@ def getTimeStr(sim_pred,resultMap,i):
     sim_pred=sim_pred.replace(';',':')
     if(sim_pred.find('年')==-1):
         return sim_pred
-    if(sim_pred.find(':')==-1):
-        return sim_pred
-    if(int(resultMap['pos_time'])>0):
+    # if(sim_pred.find(':')==-1):
+    #     return sim_pred
+    if(int(resultMap['pos_time'])>0):#return if already set
         return
     sim_pred=sim_pred.replace('年日','年9').replace('  ',' ')
     sim_pred=sim_pred.replace('目','日').replace('曰','日').replace('l','1').replace(';',':')
-    sim_pred=sim_pred.replace('局','月').replace('l','1').replace(';',':')
+    sim_pred=sim_pred.replace('局','月').replace('l','1').replace(';',':')\
+    .replace('時',':').replace('跨',':').replace('府',':')
     sim_pred=sim_pred.replace('》',' ').replace(')',' ') # yyyy-mm-dd x)Time
-    timeList = sim_pred.split(' ')
-    if(len(timeList)>3):
-        return
-    sYear = timeList[0] # YYYY-MM-DD
-    sMonth = sYear.split('年')[1] # MM-DD
-    sMonth = sMonth.split('月')[0]
 
-    sDate = sYear.split('月')[1] # DD-XX
-    sDate = sDate.split('日')[0]
-
-    sTime=''
-    if(len(timeList)==2):
-        sTime = timeList[1]
-    elif(len(timeList)==3):
-        sTime = timeList[2]
-
-    if(sTime.find('分')>-1):
-        sTime=sTime.replace('分','').replace('跨',':').replace('府',':')
+    sYear=sim_pred[0:sim_pred.find('年')]
+    iPosYear=sim_pred.find('年')
     sYear=numberUtils.numberReplacement(sYear)
-    sMonth=numberUtils.numberReplacement(sMonth)
-    sDate=numberUtils.numberReplacement(sDate)
+    lstYear=re.findall(r'\d+', sYear)
+    sYear=''.join(sYear)
+    if(len(sYear)!=4):
+        sYear='2017'
+    iYear=int(sYear)
 
-    iMonth=int(sMonth)
-    if(iMonth>12 or iMonth<1):
+    if(sim_pred.find('月')==-1):
         iMonth=1
-
-    tmpTime=sTime.split(':')
-    sHour=numberUtils.numberReplacement(tmpTime[0])
-    if(sHour==''):
-        sHour=1
-    if(len(tmpTime)>1):
-        sMin=numberUtils.numberReplacement(tmpTime[1])
-        if(sMin==''):
-            sMin=0
+    elif(sim_pred.find('月')>iPosYear+3):#maybe week
+        iMonth=1
     else:
-        sMin=0
-    print('year={},month={},date={},time={}'.format(sYear,sMonth,sDate,sTime))
+        sMonth=sim_pred[sim_pred.find('年'):sim_pred.find('月')]
+        sMonth=numberUtils.numberReplacement(sMonth)
+        lstMonth=re.findall(r'\d+', sMonth)
+        sMonth=''.join(lstMonth)
+        if(sMonth==''):
+            iMonth=1
+        else:
+            iMonth=int(sMonth)
+
+    if(iMonth>12 or iMonth==0):
+        iMonth=1
+#----------------------------------------
+    if(sim_pred.find('日')==-1):
+        iDate=1
+    elif(sim_pred.find('日')>iPosYear+6):#maybe week
+        iDate=1
+    else:
+        sDate=sim_pred[sim_pred.find('年'):sim_pred.find('日')]
+        sDate=numberUtils.numberReplacement(sDate)
+        sDate=sDate[-3,-1]
+        lstDate=re.findall(r'\d+', sDate)
+        sDate=''.join(lstDate)
+        if(sDate==''):
+            iDate=1
+        else:
+            iDate=int(sDate)
+
+    if(iDate>31 or iDate==0):
+        iDate=1
+#----------------------------------------hour
+    if(sim_pred.find(':')==-1):
+        iHour=0
+    else:
+        sHour=sim_pred[sim_pred.find(':')-2:sim_pred.find(':')]
+        sHour=numberUtils.numberReplacement(sHour)
+        sHour=sHour[-3,-1]
+        lstHour=re.findall(r'\d+', sHour)
+        sHour=''.join(lstHour)
+        if(sHour==''):
+            iHour=0
+        else:
+            iHour=int(sHour)
+
+    if(iHour>23):
+        iHour=0
+#----------------------------------------minute
+    if(sim_pred.find(':')==-1):
+        iMin=0
+    else:
+        sMin=sim_pred[sim_pred.find(':'):-1]
+        sMin=numberUtils.numberReplacement(sMin)
+        lstMin=re.findall(r'\d+', sMin)
+        sMin=''.join(lstMin)
+        if(sMin==''):
+            iMin=0
+        else:
+            iMin=int(sMin)
+
+    if(iMin>59):
+        iMin=0
+
+    print('year={},month={},date={},time={}'.format(iYear,iMonth,iDate,iHour))
     try:
-        new_date = datetime.datetime(int(sYear[:4]), iMonth, int(sDate), int(sHour),int(sMin))
+        new_date = datetime.datetime(iYear, iMonth, iDate, iHour,iMin)
         new_date = str(new_date)
         resultMap['4_year']=new_date
         print('output year {}'.format(resultMap['4_year']))
         resultMap['pos_time']=i
     except:
         print('Exception for {}'.format(sim_pred))
-    # return new_date
