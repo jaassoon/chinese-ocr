@@ -50,7 +50,7 @@ def getTimeStr(sim_pred,resultMap,i):
     else:
         sDate=sim_pred[sim_pred.find('年'):sim_pred.find('日')]
         sDate=numberUtils.numberReplacement(sDate)
-        sDate=sDate[-3,-1]
+        sDate=sDate[-3:-1]
         lstDate=re.findall(r'\d+', sDate)
         sDate=''.join(lstDate)
         if(sDate==''):
@@ -66,7 +66,7 @@ def getTimeStr(sim_pred,resultMap,i):
     else:
         sHour=sim_pred[sim_pred.find(':')-2:sim_pred.find(':')]
         sHour=numberUtils.numberReplacement(sHour)
-        sHour=sHour[-3,-1]
+        sHour=sHour[-3:-1]
         lstHour=re.findall(r'\d+', sHour)
         sHour=''.join(lstHour)
         if(sHour==''):
@@ -92,7 +92,7 @@ def getTimeStr(sim_pred,resultMap,i):
     if(iMin>59):
         iMin=0
 
-    print('year={},month={},date={},time={}'.format(iYear,iMonth,iDate,iHour))
+    # print('year={},month={},date={},time={}'.format(iYear,iMonth,iDate,iHour))
     try:
         new_date = datetime.datetime(iYear, iMonth, iDate, iHour,iMin)
         new_date = str(new_date)

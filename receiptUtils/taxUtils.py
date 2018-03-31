@@ -2,9 +2,9 @@
 from receiptUtils import numberUtils
 import re
 
-def getTotalPrice(sim_pred,resultMap,i):
-  print('input_{} totalPrice {}'.format(i,sim_pred))
-  resultMap['pos_total']=i
+def getTax(sim_pred,resultMap,i):
+  print('input_{} tax {}'.format(i,sim_pred))
+  resultMap['pos_tax']=i
   if(sim_pred.find('半')>-1):
     sim_pred=sim_pred[sim_pred.find('半'):-1]
   elif(sim_pred.find('羊')>-1):
@@ -15,12 +15,12 @@ def getTotalPrice(sim_pred,resultMap,i):
     sim_pred=''
 
   sim_pred=numberUtils.numberReplacement(sim_pred)
-  lstTotal=re.findall(r'\d+', sim_pred)
-  sTotal=''.join(lstTotal)
-  if(sTotal==''):
-      iTotal=0
+  lstTax=re.findall(r'\d+', sim_pred)
+  sTax=''.join(lstTax)
+  if(sTax==''):
+      iTax=0
   else:
-      iTotal=int(sTotal)
-  resultMap['7_total']=iTotal
-  if(resultMap['7_total']>0):
-    print('output total------------- {}'.format(resultMap['7_total']))
+      iTax=int(sTax)
+  resultMap['a_tax']=iTax
+  if(resultMap['a_tax']>0):
+    print('output tax------------- {}'.format(resultMap['a_tax']))
