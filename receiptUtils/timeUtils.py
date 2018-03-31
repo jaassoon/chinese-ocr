@@ -4,6 +4,7 @@ from receiptUtils import numberUtils
 
 def getTimeStr(sim_pred,resultMap,i):
     print('input year {}'.format(sim_pred))
+    sim_pred=sim_pred.replace(';',':')
     if(sim_pred.find('年')==-1):
         return sim_pred
     if(sim_pred.find(':')==-1):
