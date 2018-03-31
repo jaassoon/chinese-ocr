@@ -12,4 +12,9 @@ def getShopName(tmpResult,resultMap):
     # or tmpResult.find('am')>-1 \
     ):
       resultMap['1_shopName'] = 'サークルK'
+  elif(  tmpResult.find('ammaXXXXXX')>-1 \
+    # or tmpResult.find('Yar')>-1 \
+    # or tmpResult.find('am')>-1 \
+    ):
+      resultMap['1_shopName'] = 'ファミア!!'
   print('output shopName------------- {}'.format(resultMap['1_shopName']))

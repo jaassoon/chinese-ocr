@@ -7,8 +7,6 @@ def getTimeStr(sim_pred,resultMap,i):
     sim_pred=sim_pred.replace(';',':')
     if(sim_pred.find('年')==-1):
         return sim_pred
-    # if(sim_pred.find(':')==-1):
-    #     return sim_pred
     if(int(resultMap['pos_time'])>0):#return if already set
         return
     sim_pred=sim_pred.replace('年日','年9').replace('  ',' ')
@@ -50,7 +48,7 @@ def getTimeStr(sim_pred,resultMap,i):
     else:
         sDate=sim_pred[sim_pred.find('年'):sim_pred.find('日')]
         sDate=numberUtils.numberReplacement(sDate)
-        sDate=sDate[-3:-1]
+        sDate=sDate[-3:]
         lstDate=re.findall(r'\d+', sDate)
         sDate=''.join(lstDate)
         if(sDate==''):
@@ -66,7 +64,7 @@ def getTimeStr(sim_pred,resultMap,i):
     else:
         sHour=sim_pred[sim_pred.find(':')-2:sim_pred.find(':')]
         sHour=numberUtils.numberReplacement(sHour)
-        sHour=sHour[-3:-1]
+        sHour=sHour[-3:]
         lstHour=re.findall(r'\d+', sHour)
         sHour=''.join(lstHour)
         if(sHour==''):
@@ -80,7 +78,7 @@ def getTimeStr(sim_pred,resultMap,i):
     if(sim_pred.find(':')==-1):
         iMin=0
     else:
-        sMin=sim_pred[sim_pred.find(':'):-1]
+        sMin=sim_pred[sim_pred.find(':'):]
         sMin=numberUtils.numberReplacement(sMin)
         lstMin=re.findall(r'\d+', sMin)
         sMin=''.join(lstMin)

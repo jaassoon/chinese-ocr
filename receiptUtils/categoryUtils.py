@@ -2,6 +2,7 @@
 from receiptUtils import numberUtils
 import re
 
+#deprecated
 def getCategory(sim_pred,resultMap,i):
   print('input_{} category {}'.format(i,sim_pred))
   iCategory=int(resultMap['6_category'])
@@ -24,15 +25,8 @@ def getCategorySuffix(tmpResult,resultMap,key,tmpDict):
   if(tmpDict['year']>=key):
     return
   print('input_{} category {}'.format(key,tmpResult))
-  if(tmpResult.find('半')>-1):
-    tmpResult=tmpResult[tmpResult.find('半'):]
-  elif(tmpResult.find('羊')>-1):
-    tmpResult=tmpResult[tmpResult.find('羊'):]
-  elif(tmpResult.find('洋')>-1):
-    tmpResult=tmpResult[tmpResult.find('洋'):]
-  elif(tmpResult.find('浄')>-1):
-    tmpResult=tmpResult[tmpResult.find('浄'):]
-  else:
+  tmpResult=numberUtils.getMny(tmpResult)
+  if(tmpResult==''):
     return
 
   tmpResult=numberUtils.numberReplacement(tmpResult)

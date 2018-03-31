@@ -5,15 +5,7 @@ import re
 def getTax(sim_pred,resultMap,i):
   print('input_{} tax {}'.format(i,sim_pred))
   resultMap['pos_tax']=i
-  if(sim_pred.find('半')>-1):
-    sim_pred=sim_pred[sim_pred.find('半'):]
-  elif(sim_pred.find('羊')>-1):
-    sim_pred=sim_pred[sim_pred.find('羊'):]
-  elif(sim_pred.find('洋')>-1):
-    sim_pred=sim_pred[sim_pred.find('洋'):]
-  else:
-    sim_pred=''
-
+  sim_pred=numberUtils.getMny(sim_pred)
   sim_pred=numberUtils.numberReplacement(sim_pred)
   lstTax=re.findall(r'\d+', sim_pred)
   sTax=''.join(lstTax)
