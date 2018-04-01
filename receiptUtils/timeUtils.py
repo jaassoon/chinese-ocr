@@ -19,7 +19,7 @@ def getTimeStr(sim_pred,resultMap,i):
     iPosYear=sim_pred.find('年')
     sYear=numberUtils.numberReplacement(sYear)
     lstYear=re.findall(r'\d+', sYear)
-    sYear=''.join(sYear)
+    sYear=''.join(lstYear)
     if(len(sYear)!=4):
         sYear='2017'
     iYear=int(sYear)

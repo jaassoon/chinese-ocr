@@ -19,12 +19,8 @@ def getCategory(sim_pred,resultMap,i):
   if(int(resultMap['6_category'])>0):
     print('output category {}'.format(resultMap['6_category']))
 
-def getCategorySuffix(tmpResult,resultMap,key,tmpDict):
-  if(tmpDict['tax']>0 and key>tmpDict['tax']-4):
-    return
-  if(tmpDict['year']>=key):
-    return
-  print('input_{} category {}'.format(key,tmpResult))
+def getCategoryAfter(tmpResult,resultMap,i):
+  print('input_{} category {}'.format(i,tmpResult))
   tmpResult=numberUtils.getMny(tmpResult)
   if(tmpResult==''):
     return

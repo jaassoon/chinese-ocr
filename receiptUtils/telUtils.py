@@ -2,7 +2,7 @@
 from receiptUtils import numberUtils
 import re
 
-def getTel(tmpResult,resultMap):
+def getTel(tmpResult,resultMap,i):
   print('input tel {}'.format(tmpResult))
   tmpResult = numberUtils.numberReplacement(tmpResult)
   strList=re.findall(r'\d+', tmpResult)
@@ -14,4 +14,6 @@ def getTel(tmpResult,resultMap):
   elif(len(resultMap['3_tel'])<len(tmpResult)):
     resultMap['3_tel'] = tmpResult
   if(resultMap['3_tel']==tmpResult and len(tmpResult)>6):
-    print('output tel------------- {}'.format(tmpResult))
+    print('output tel{} {}'.format('-'*10,tmpResult))
+    if(tmpResult!='1234567890'):
+      resultMap['pos_tel_after']=i
