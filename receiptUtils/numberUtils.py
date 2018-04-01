@@ -1,24 +1,4 @@
 #coding:utf-8
-resultMap={'1_shopName':'ファミア!!','2_city':'none',
-              '3_tel':'1234567890','4_year':'none',
-              '5_goods':'none','6_category':0,
-              '7_total':0,'8_pointcard':'none',
-              '9_receiptNO':'none','a_staffNO':'none',
-              'a_tax':0,
-              'suffix_catPrice':[],
-              'pos_tel_after':0,
-              'origin_result':[],
-              'pos_shop':0,
-              'pos_time':0,
-              'pos_time_after':0,
-              'pos_tax_after':0,
-              'pos_card_after':0,
-              'pos_staff':0,
-              'pos_ling':0,
-              'pos_category':0,
-              'pos_total':0,
-              'pos_tax':0,
-              'pos_card':0}
 def checkIsTaxStr(sim_pred):
   return (sim_pred.find('消') > -1 and sim_pred.find('税') > -1) \
       or (sim_pred.find('内') > -1 and sim_pred.find('等') > -1) \

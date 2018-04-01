@@ -36,6 +36,7 @@ def getCity(tmpResult,resultMap):
     elif(tmpResult.find('神')==0 or (tmpResult.find('神')>-1 and tmpResult.find('川')>0)):
         resultMap['2_city']='神奈川県'
     elif(tmpResult.find('哀京都')>-1 \
+        or tmpResult.find('患京')>-1 \
         or tmpResult.find('莫京都')>-1 \
         or tmpResult.find('真京都')>-1 \
         or (tmpResult.find('京都')>-1 and tmpResult.find('府')!=2)):
@@ -49,5 +50,5 @@ def getCity(tmpResult,resultMap):
     else:
         if(tmpResult[:3] in citys):
           resultMap['2_city'] = tmpResult[:3]
-    if(resultMap['2_city'] == tmpResult[:3]):
-      print('output city {}'.format(resultMap['2_city']))
+    # if(resultMap['2_city'] == tmpResult[:3]):
+    print('output city {}'.format(resultMap['2_city']))
