@@ -13,8 +13,13 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city']='宮城県'
     elif(tmpResult.find('香川')>-1 or tmpResult.find('杳')>-1):
         resultMap['2_city']='香川県'
-    elif(tmpResult.find('愛知')>-1 or tmpResult.find('知県')>-1):
+
+    #below is group
+    elif(tmpResult.find('高知')>-1):
+        resultMap['2_city']='高知県'
+    elif(tmpResult.find('愛知')>-1 or tmpResult.find('知')>-1):
         resultMap['2_city']='愛知県'
+
     elif(tmpResult.find('三重')>-1):
         resultMap['2_city']='三重県'
     elif(tmpResult.find('歧阜')>-1):#FIXME
@@ -50,5 +55,5 @@ def getCity(tmpResult,resultMap):
     else:
         if(tmpResult[:3] in citys):
           resultMap['2_city'] = tmpResult[:3]
-    # if(resultMap['2_city'] == tmpResult[:3]):
-    print('output city {}'.format(resultMap['2_city']))
+    if(resultMap['2_city'] != 'none'):
+      print('output city-------- {}'.format(resultMap['2_city']))
