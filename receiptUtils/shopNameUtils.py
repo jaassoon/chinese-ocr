@@ -7,6 +7,9 @@ def getShopName(tmpResult,resultMap):
     ):
       resultMap['1_shopName'] = 'ファミリマート'
       resultMap['pos_shop']=1
+  elif(resultMap['type_shop']==1):
+    resultMap['1_shopName'] = 'ファミマ!!'
+    resultMap['pos_shop']=1
   elif(  tmpResult.find('ルツ')>-1 \
     # or tmpResult.find('Yar')>-1 \
     # or tmpResult.find('am')>-1 \

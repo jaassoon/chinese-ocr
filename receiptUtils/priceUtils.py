@@ -13,9 +13,9 @@ def getTotalPrice(sim_pred,resultMap,i):
       iTotal=0
   else:
       iTotal=int(sTotal)
-  resultMap['7_total']=iTotal
-  if(resultMap['7_total']>0):
-    print('output total------------- {}'.format(resultMap['7_total']))
+  resultMap['5_total']=iTotal
+  if(resultMap['5_total']>0):
+    print('output total------------- {}'.format(resultMap['5_total']))
 
 def getSubTotalPrice(sim_pred,resultMap,i):
   print('input_{} subTotalPrice {}'.format(i,sim_pred))
