@@ -1,12 +1,4 @@
 #coding:utf-8
-def checkIsTaxStr(sim_pred):
-  return (sim_pred.find('消') > -1 and sim_pred.find('税') > -1) \
-      or (sim_pred.find('内') > -1 and sim_pred.find('等') > -1) \
-      or (sim_pred.find('内') > -1 and sim_pred.find('税') > -1) \
-      or (sim_pred.find('消') > -1 and sim_pred.find('等') > -1) \
-      or (sim_pred.find('内消') > -1) \
-      or (sim_pred.find('税等') > -1)
-      
 def getMny(sim_pred):
   if(sim_pred.find('半')>-1):
     sim_pred=sim_pred[sim_pred.find('半'):]
