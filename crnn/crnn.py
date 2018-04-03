@@ -9,7 +9,7 @@ import numpy as np
 import util
 import dataset
 import models.crnn as crnn
-import keys
+import ocr.keys as keys
 from math import *
 import cv2
 
