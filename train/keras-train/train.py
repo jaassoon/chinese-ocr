@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import dataset
-import keys
+import ocr.keys as keys
+# import keys
 import numpy as np
 import torch
 

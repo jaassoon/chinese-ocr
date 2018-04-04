@@ -35,7 +35,7 @@ def dumpRotateImage_(img, degree, pt1, pt2, pt3, pt4):
 
 
 def crnnSource():
-    alphabet = keys.alphabet
+    alphabet = keys.alphabet[0:-1]
     converter = util.strLabelConverter(alphabet)
     if torch.cuda.is_available() and GPU:
         model = crnn.CRNN(32, 1, len(alphabet) + 1, 256, 1).cuda()
