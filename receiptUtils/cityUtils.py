@@ -54,6 +54,6 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city'] = '大阪府'
     else:
         if(tmpResult[:3] in citys):
-          resultMap['2_city'] = tmpResult[:3]
+          resultMap['2_city'] = tmpResult[:2]+'県'
     if(resultMap['2_city'] != 'none'):
       print('output city-------- {}'.format(resultMap['2_city']))
