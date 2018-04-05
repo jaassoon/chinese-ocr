@@ -103,7 +103,7 @@ crnn = crnn.CRNN(opt.imgH, nc, nclass, nh, ngpu)
 crnn.apply(weights_init)
 if opt.crnn != '':
     print('loading pretrained model from %s' % opt.crnn)
-    crnn.load_state_dict(torch.load(opt.crnn))
+    crnn.load_state_dict(torch.load(opt.crnn,map_location='cpu'))
 print(crnn)
 
 image = torch.FloatTensor(opt.batchSize, 3, opt.imgH, opt.imgH)
@@ -200,7 +200,7 @@ def trainBatch(net, criterion, optimizer, flage=False):
     data = train_iter.next()
     cpu_images, cpu_texts = data  ##decode utf-8 to unicode
     if ifUnicode:
-        cpu_texts = [clean_txt(tx.decode('utf-8')) for tx in cpu_texts]
+        cpu_texts = [clean_txt(tx) for tx in cpu_texts]
 
     batch_size = cpu_images.size(0)
     utils.loadData(image, cpu_images)
