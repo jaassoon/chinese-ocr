@@ -14,14 +14,14 @@ import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torch.utils.data
 import utils
-from keys import alphabet
+import keys
 from torch.autograd import Variable
 from warpctc_pytorch import CTCLoss
 
 # with open('../run/char.txt') as f:
 #    newChars = f.read().strip().decode('utf-8')
 # alphabet += u''.join(list(set(newChars) - set(alphabet)))
-
+alphabet=keys.alphabet[0:-1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--trainroot', help='path to dataset', default='../data/lmdb/train')
 parser.add_argument('--valroot', help='path to dataset', default='../data/lmdb/val')
