@@ -7,7 +7,7 @@ import time,sys
 im_names = glob('./test/*.jpg')
 
 def printOriginResult(result):
-    with open('test/' + 'result_origin.txt', 'a+') as f:
+    with open('./' + 'result_origin.txt', 'a+') as f:
         strResult = ''
         for key in result:
             strResult += '{}\r\n'.format(result[key][1])

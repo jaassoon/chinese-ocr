@@ -20,3 +20,25 @@ def adjustPredict(i,sim_pred,resultMap,pos_tax):
 def pos_ling_predict(i,sim_pred,resultMap):
   if(i>3 and resultMap['pos_ling']==0 and sim_pred.find('領')>-1):
     resultMap['pos_ling']=i
+
+def getDrawboxResult(origin_result,resultMap):
+    for i, sim_pred in enumerate(origin_result):#ling
+      commonUtils.pos_ling_predict(i,sim_pred,resultMap)
+      if(resultMap['pos_ling']>0):
+        break
+    pos_ling=resultMap['pos_ling']
+    for i, sim_pred in enumerate(origin_result):#tax
+      taxUtils.pos_tax_predict(i,sim_pred,resultMap)
+      if(resultMap['pos_tax']>0):
+        break
+    for i, sim_pred in enumerate(origin_result):#year
+      if(resultMap['pos_time']>0 and i<=3 and i>=pos_ling+2):
+        break
+      if(sim_pred.find('年') > -1):
+        timeUtils.getTimeStr(sim_pred, resultMap, i)
+
+    pos_tax=resultMap['pos_tax']
+    taxUtils.getTax(origin_result[pos_tax],resultMap,pos_tax)
+    staffNoUtils.getNo(origin_result[pos_ling+2],resultMap,pos_ling+2)#match family
+    for i, sim_pred in enumerate(origin_result):
+        commonUtils.adjustPredict(i,sim_pred,resultMap,pos_tax)
