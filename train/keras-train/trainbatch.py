@@ -89,6 +89,8 @@ for i in range(3):
                 loss = crrentLoss
                 path = 'save_model/model{}.h5'.format(loss)
                 print("save model:{}".format(path))
-                basemodel.save(path)
+                # same as pretrain
+                basemodel.save('save_model/ocr0.2.h5')
+                # basemodel.save(path)
 
         j += 1
