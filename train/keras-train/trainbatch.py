@@ -11,7 +11,8 @@ nclass = len(characters) + 1
 
 trainroot = '../data/lmdb/train'
 valroot = '../data/lmdb/val'
-workers = 4
+# workers = 4  #FIXME tmp commented
+workers = 16
 imgH = 32
 imgW = 256
 keep_ratio = False
