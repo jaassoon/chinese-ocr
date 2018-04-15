@@ -1,7 +1,7 @@
 #coding:utf-8
 from receiptUtils import telUtils, staffNoUtils,shopNameUtils,commonUtils,\
 timeUtils, cityUtils,priceUtils,cardUtils,categoryUtils,taxUtils,numberUtils
-import os,cv2
+import os,cv2,datetime
 import numpy as np
 from PIL import Image
 
@@ -116,3 +116,105 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
                 f.write(sim_pred)
     commonUtils.getDrawboxResult(resultMap['origin_result'], resultMap)
     return resultMap
+
+def parseResult(result,resultMap,im_name):
+    if (resultMap['pos_ling'] < resultMap['pos_time']):  # ling and then year,match family
+        resultMap['1_shopName'] = 'ファミリマート'
+        resultMap['type_shop'] = 1  # two shop type
+
+    for i in result:
+        sim_pred = str(result[i][1]).strip()
+        if (i <= 1 and resultMap['pos_shop'] == 0):
+            shopNameUtils.getShopName(sim_pred, resultMap)
+        if (i > 1 and resultMap['pos_tel_after'] == 0):
+            telUtils.getTel(sim_pred, resultMap, i)
+
+    pos_tel = resultMap['pos_tel_after']
+    for i in result:
+        sim_pred = str(result[i][1]).strip()
+        if (i > 1):
+            if (resultMap['type_shop'] == 1 and i < pos_tel):  # Fami
+                cityUtils.getCity(sim_pred, resultMap)
+            elif (i > 1 and resultMap['2_city'] == 'none'):
+                cityUtils.getCity(sim_pred, resultMap)
+                if (resultMap['2_city'] != 'none'):
+                    break
+
+    for i in result:
+        sim_pred = str(result[i][1]).strip()
+        if (i > 1 and resultMap['2_city'] == 'none'):
+            cityUtils.getCity(sim_pred, resultMap)
+        if (i > 3 and resultMap['pos_time_after'] == 0):
+            if (sim_pred.find('年') > -1):
+                resultMap['pos_time_after'] = i
+        if (i > 6 and resultMap['pos_time_after'] > 0):
+            if (sim_pred.find('-') == 1 and len(sim_pred) <= 6):
+                sim_pred = sim_pred.replace('l', '1')
+        if (i > 8 and taxUtils.checkIsTaxStr(sim_pred)):
+            resultMap['pos_tax_after'] = i
+
+    pos_time = resultMap['pos_time_after']
+    pos_tax = resultMap['pos_tax_after']
+    if (resultMap['1_shopName'] == 'ファミリマート'):
+        if (resultMap['pos_time'] + 1 == resultMap['pos_staff']):
+            for i in range(pos_time + 1, pos_time + 4):
+                sim_pred = str(result[i][1]).strip()
+                if (sim_pred.find('-') == 1 and len(sim_pred) <= 8):
+                    sim_pred = numberUtils.numberReplacement(sim_pred)
+                    if (sim_pred[0].isdigit() and sim_pred[0] != resultMap['6_receiptNO'][0]):
+                        resultMap['6_receiptNO'] = sim_pred[0] + resultMap['6_receiptNO'][1:]
+                if (len(sim_pred) <= 8):
+                    staffNoUtils.amendStaff(sim_pred, resultMap, i)
+
+    timeUtils.amendYear(result[pos_time][1], resultMap)
+    if (pos_time > 0):
+        timeUtils.amendHour(result[pos_time - 1][1], resultMap)
+    for i in result:
+        sim_pred = str(result[i][1]).strip()
+        if (i > pos_time and i < pos_tax - 3):
+            categoryUtils.getCategoryAfter(sim_pred, resultMap, i)
+        if (i > pos_tax + 1 and resultMap['pos_card_after'] == 0):
+            cardUtils.getCardNo(sim_pred, resultMap, i)
+
+    resultMap['9_category'] = len(resultMap['suffix_catPrice'])
+    catTotalMny = 0
+    taxMny = resultMap['a_tax']
+    subtotal = resultMap['b_subtotal']
+    catCount = len(resultMap['suffix_catPrice'])
+    for price in resultMap['suffix_catPrice']:
+        catTotalMny += price
+    if (taxMny > 0):
+        if (taxMny / 0.07 + 50 < catTotalMny and catCount > 1):
+            catTotalMny -= resultMap['suffix_catPrice'][-1]
+            resultMap['9_category'] = len(resultMap['suffix_catPrice']) - 1
+            # if(resultMap['5_total']==0):
+            # if(subtotal>0)
+    else:
+        if (catCount > 1):
+            lastMny = resultMap['suffix_catPrice'][-1]
+            if (catTotalMny - lastMny == lastMny):
+                catTotalMny = lastMny
+                resultMap['9_category'] = catCount - 1
+    if (resultMap['5_total'] == 0):
+        if (subtotal > 0):
+            resultMap['5_total'] = subtotal
+        else:
+            resultMap['5_total'] = catTotalMny
+    if len(resultMap['3_tel'].strip()) == 0:
+        resultMap['3_tel'] = '1234567890'
+    if len(resultMap['2_city'].strip()) == 0:
+        resultMap['2_city'] = '東京都'
+    if len(resultMap['7_staffNO'].strip()) == 0:
+        resultMap['7_staffNO'] = '001'
+    print(resultMap)
+    base_name = im_name.split('/')[-1]
+    with open('./' + 'result_submit.tsv', 'a+') as f:
+        f.write(base_name.split('.')[0] + '.jpg-----------' + str(datetime.datetime.now().time()) + '\r\n')
+        resultStr = ''
+        i = 0
+        for key in sorted(resultMap):
+            if (i > 9):
+                break
+            resultStr += '{}\r\n'.format(resultMap.get(key))
+            i += 1
+        f.write(resultStr)

@@ -8,7 +8,7 @@ def getCity(tmpResult,resultMap):
       .replace('菓','県').replace('部','都')
     if(tmpResult.find('兵')==0):
         resultMap['2_city']='兵庫県'
-    elif(tmpResult.find('京都府')>-1):
+    elif(tmpResult.find('都府')>-1):
         resultMap['2_city']='京都府'
 
     elif(tmpResult.find('宮城')>-1 or (tmpResult.find('城')>-1 and tmpResult.find('城')<3)):

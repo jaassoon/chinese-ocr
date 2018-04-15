@@ -11,6 +11,7 @@ parser.add_argument('--develop', action='store_true', help='to gen result img')
 parser.add_argument('--torch', action='store_true', help='to use torch model')
 
 opt = parser.parse_args()
+print(opt)
 
 def printOriginResult(result):
     with open('./' + 'result_origin.txt', 'a+') as f:
