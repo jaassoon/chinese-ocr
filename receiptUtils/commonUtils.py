@@ -20,7 +20,8 @@ def adjustPredict(i,sim_pred,resultMap,pos_tax):
         staffNoUtils.getNo(sim_pred, resultMap, i)
 
 def pos_ling_predict(i,sim_pred,resultMap):
-  if(i>3 and resultMap['pos_ling']==0 and sim_pred.find('領')>-1):
+  if(i>3 and resultMap['pos_ling']==0 and \
+      (sim_pred.find('領')>-1 or sim_pred.find('証')>-1)):
     resultMap['pos_ling']=i
 
 def getDrawboxResult(origin_result,resultMap):
