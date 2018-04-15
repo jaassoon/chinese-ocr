@@ -96,7 +96,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
         i+=1
         crop_img = img[int(box[1]):int(box[5]), iXStart:int(xEnd)]
         # print('Y0={}, Y1={}, X0={}, X1={}'.format(int(box[1]),int(box[5]),iXStart,int(xEnd)))
-        if opt.develop:
+        if opt.develop and i<=5:
           cv2.imwrite(os.path.join("test/results", base_name.split('.')[0] + "_" + str(i) + ".jpg"), crop_img)
         try:
             if opt.torch:
@@ -110,5 +110,8 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
             continue
         sim_pred=sim_pred.strip()
         resultMap['origin_result'].append(sim_pred)
+        if opt.develop and i <= 5:
+            with open(os.path.join("test/results", base_name.split('.')[0] + "_" + str(i) + ".txt"), 'a+') as f:
+                f.write(sim_pred)
     commonUtils.getDrawboxResult(resultMap['origin_result'], resultMap)
     return resultMap

@@ -4,7 +4,7 @@ citys = [
 ]
 def getCity(tmpResult,resultMap):
     print('input city {}'.format(tmpResult))
-    tmpResult=tmpResult.strip().replace(',','').replace('，','').replace('\'','')
+    tmpResult=tmpResult.strip().replace(',','').replace('，','').replace('\'','').replace('菓','県')
     if(tmpResult.find('兵')==0):
         resultMap['2_city']='兵庫県'
     elif(tmpResult.find('京都府')>-1):
@@ -20,7 +20,8 @@ def getCity(tmpResult,resultMap):
     elif(tmpResult.find('愛知')>-1 or tmpResult.find('知')>-1):
         resultMap['2_city']='愛知県'
 
-    elif(tmpResult.find('三重')>-1):
+    elif(tmpResult.find('三重')>-1 \
+        or (tmpResult.find('三')>-1 and tmpResult.find('県')>0)):
         resultMap['2_city']='三重県'
     elif(tmpResult.find('歧阜')>-1):#FIXME
         resultMap['2_city']='岐阜県'
@@ -32,13 +33,22 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city']='奈良県'
     elif(tmpResult.find('静')>-1):
         resultMap['2_city']='静岡県'
-    elif(tmpResult.find('福固')>-1):
+    elif(tmpResult.find('福固')>-1 \
+        or tmpResult.find('岡県')>-1):
         resultMap['2_city']='福岡県'
     elif(tmpResult.find('秋田')>-1):
         resultMap['2_city']='秋田県'
     elif(tmpResult.find('滋')>-1):
         resultMap['2_city']='滋賀県'
-    elif(tmpResult.find('神')==0 or (tmpResult.find('神')>-1 and tmpResult.find('川')>0)):
+    elif(tmpResult.find('千')>-1):
+        resultMap['2_city']='千葉県'
+    elif(tmpResult.find('森')>-1):
+        resultMap['2_city']='青森県'
+    elif(tmpResult.find('北海')>-1):
+        resultMap['2_city']='北海道'
+    elif(tmpResult.find('神')==0 \
+        or tmpResult.find('奈川')>-1
+        or (tmpResult.find('神')>-1 and tmpResult.find('川')>0)):
         resultMap['2_city']='神奈川県'
     elif(tmpResult.find('哀京都')>-1 \
         or tmpResult.find('患京')>-1 \
