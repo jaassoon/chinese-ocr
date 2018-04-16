@@ -59,5 +59,5 @@ def numberReplacement(tmpResult):
       .replace('、', '')\
       .replace('\'', '')\
       .strip('\'')\
-      .replace(' ','')
+      # .replace(' ','')
   return tmpResult

@@ -30,6 +30,12 @@ def getDrawboxResult(origin_result,resultMap):
       if(resultMap['pos_ling']>0):
         break
     pos_ling=resultMap['pos_ling']
+    for i, sim_pred in enumerate(origin_result):#tel
+      if(sim_pred.find('電話：')>-1):
+        resultMap['tel_before']=sim_pred
+        resultMap['pos_tel_before']=i
+      if(resultMap['pos_tel_before']>0):
+        break
     for i, sim_pred in enumerate(origin_result):#tax
       taxUtils.pos_tax_predict(i,sim_pred,resultMap)
       if(resultMap['pos_tax']>0):
@@ -71,6 +77,8 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
               'a_tax':0,
               'b_subtotal':0,
               'suffix_catPrice':[],
+              'tel_before':'',
+              'pos_tel_before':0,
               'pos_tel_after':0,
               'origin_result':[],
               'pos_shop':0,

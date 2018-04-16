@@ -1,9 +1,23 @@
 #coding:utf-8
 from receiptUtils import numberUtils
-import re
+import re,jaconv
 
 def getTel(tmpResult,resultMap,i):
   print('input tel {}'.format(tmpResult))
+  if(resultMap['pos_tel_before']>0 and tmpResult.find(' ')>-1):
+    print('tel_before {}'.format(resultMap['pos_tel_before']))
+    telBefore=resultMap['tel_before'].split('：')
+    if(len(telBefore)>1):
+      telBeforeNew=telBefore[1]
+      telAfter=tmpResult.split('：')
+      if(len(telAfter)>1):
+        telAfterNew=telAfter[1]
+        lsStr1 = list(telAfterNew)
+        for idx, val in enumerate(telAfterNew):
+          if (val == ' '):
+            lsStr1[idx] = telBeforeNew[idx]
+
+  tmpResult = jaconv.z2h(tmpResult, digit=True, ascii=True)
   tmpResult = numberUtils.numberReplacement(tmpResult)
   strList=re.findall(r'\d+', tmpResult)
   tmpResult=''.join(strList)

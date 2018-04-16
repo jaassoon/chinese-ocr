@@ -1,6 +1,6 @@
 #coding:utf-8
 from receiptUtils import numberUtils
-import re
+import re,jaconv
 
 def isStaffStr(sim_pred):
     return sim_pred.find('No')>-1 or sim_pred.find('責')>-1 \
@@ -29,7 +29,9 @@ def getNo(sim_pred,resultMap,i):
     if(not isStaffStr(sim_pred)):
       return
     print('input staffNo {}'.format(sim_pred))
+    # ７ｰ1784 No.0 8
     sim_pred=sim_pred.replace(',','.').replace('。','.').replace('黄','責')
+    sim_pred=jaconv.z2h(sim_pred,digit=True, ascii=True)
     if(sim_pred.find('.')>-1):
       tmpStrs=sim_pred.split('.')[-1]
     elif(sim_pred.find('責')>-1):
@@ -37,10 +39,13 @@ def getNo(sim_pred,resultMap,i):
     else:
       return
     tmpStrs=numberUtils.numberReplacement(tmpStrs)
-    lstStaff=re.findall(r'\d+', tmpStrs)
-    tmpStrs=''.join(lstStaff)
+    # lstStaff=re.findall(r'\d+', tmpStrs)
+    # tmpStrs=''.join(lstStaff)
     resultMap['7_staffNO']=tmpStrs
+    # 08
 
+    if(sim_pred.find('-')==0):
+        sim_pred=str(1)+sim_pred
     tmpList=sim_pred.split('-')
     tmpHead=tmpList[0]
     lstHead=re.findall(r'\d+', tmpHead)
@@ -50,6 +55,7 @@ def getNo(sim_pred,resultMap,i):
     tmpTail=tmpList[-1][:4]
     lstTail=re.findall(r'\d+', tmpTail)
     tmpTail=''.join(lstTail)
+    # ７178408-７17
 
     resultMap['6_receiptNO']=tmpHead+'-'+tmpTail
     print('output staffNo {}'.format(resultMap['7_staffNO']))
