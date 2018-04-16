@@ -16,6 +16,10 @@ def getMny(sim_pred):
     sim_pred=''
   return sim_pred
 
+def removeQuote(sim_pred):
+    sim_pred=sim_pred.replace('\'', '').replace('!', '')
+    return sim_pred
+
 def numberReplacement(tmpResult):
   tmpResult = tmpResult\
       .replace('０', '0') \

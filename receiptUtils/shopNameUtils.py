@@ -2,6 +2,9 @@
 def getShopName(tmpResult,resultMap):
   print('input shopName {}'.format(tmpResult))
   if(  tmpResult.find('art')>-1 \
+    or tmpResult.find('巨')>-1 \
+    or tmpResult.find('馬')>-1 \
+    or tmpResult.find('M rt')>-1 \
     or tmpResult.find('Yar')>-1 \
     or tmpResult.find('am')>-1 \
     ):

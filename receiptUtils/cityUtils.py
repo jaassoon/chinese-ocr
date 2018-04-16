@@ -11,6 +11,8 @@ def getCity(tmpResult,resultMap):
     elif(tmpResult.find('都府')>-1):
         resultMap['2_city']='京都府'
 
+    elif(tmpResult.find('茨城')>-1):
+        resultMap['2_city']='茨城県'
     elif(tmpResult.find('宮城')>-1 or (tmpResult.find('城')>-1 and tmpResult.find('城')<3)):
         resultMap['2_city']='宮城県'
     elif(tmpResult.find('宮崎')>-1):
@@ -42,11 +44,14 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city']='埼玉県'
     elif(tmpResult.find('良')>-1):
         resultMap['2_city']='奈良県'
+
     elif(tmpResult.find('静')>-1):
         resultMap['2_city']='静岡県'
     elif(tmpResult.find('福固')>-1 \
+        or tmpResult.find('福風')>-1 \
         or tmpResult.find('岡県')>-1):
         resultMap['2_city']='福岡県'
+
     elif(tmpResult.find('秋田')>-1):
         resultMap['2_city']='秋田県'
     elif(tmpResult.find('滋')>-1):

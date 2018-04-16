@@ -3,7 +3,8 @@ from receiptUtils import numberUtils
 import re
 
 def isStaffStr(sim_pred):
-    return sim_pred.find('No')>-1 or sim_pred.find('責')>-1 or sim_pred.find('黄')>-1
+    return sim_pred.find('No')>-1 or sim_pred.find('責')>-1 \
+           or sim_pred.find('黄')>-1 or sim_pred.find('NO')>-1
 
 def amendStaff(sim_pred,resultMap,i):
   if(not isStaffStr(sim_pred)):

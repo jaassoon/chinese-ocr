@@ -110,6 +110,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
             print('Exception for step {}--{}'.format(i,e))
             continue
         sim_pred=sim_pred.strip()
+        sim_pred=numberUtils.removeQuote(sim_pred)
         resultMap['origin_result'].append(sim_pred)
         if opt.develop and i <= 5:
             with open(os.path.join("test/results", base_name.split('.')[0] + "_" + str(i) + ".txt"), 'a+') as f:
