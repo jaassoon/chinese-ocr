@@ -43,34 +43,35 @@ def getNo(sim_pred,resultMap,i):
     # tmpStrs=''.join(lstStaff)
     resultMap['7_staffNO']=tmpStrs
     # 08
+    #
+    # if(sim_pred.find('ｰ')==0):
+    #     sim_pred=str(1)+sim_pred
+    # tmpList=sim_pred.split('ｰ')
+    # tmpHead=tmpList[0]
+    # lstHead=re.findall(r'\d+', tmpHead)
+    # tmpHead=''.join(lstHead)
+    # if(tmpHead==''):
+    #     tmpHead='1'
+    # tmpTail=tmpList[-1][:4]
+    # lstTail=re.findall(r'\d+', tmpTail)
+    # tmpTail=''.join(lstTail)
+    # # ７178408-７17
 
-    if(sim_pred.find('ｰ')==0):
-        sim_pred=str(1)+sim_pred
-    tmpList=sim_pred.split('ｰ')
-    tmpHead=tmpList[0]
-    lstHead=re.findall(r'\d+', tmpHead)
-    tmpHead=''.join(lstHead)
-    if(tmpHead==''):
-        tmpHead='1'
-    tmpTail=tmpList[-1][:4]
-    lstTail=re.findall(r'\d+', tmpTail)
-    tmpTail=''.join(lstTail)
-    # ７178408-７17
-
-    resultMap['6_receiptNO']=tmpHead+'-'+tmpTail
+    # resultMap['6_receiptNO']=tmpHead+'-'+tmpTail
     print('output staffNo {}'.format(resultMap['7_staffNO']))
-    print('output receiptNO {}'.format(resultMap['6_receiptNO']))
+    # print('output receiptNO {}'.format(resultMap['6_receiptNO']))
     resultMap['pos_staff']=i
 
-def getReceiptNo(sim_pred,resultMap,i):
-    print('input staffNo2 {}'.format(sim_pred))
-    # ７ｰ1784 No.0 8
-    sim_pred=sim_pred.replace(',','.').replace('。','.').replace('黄','責')
+def getReceipt(sim_pred,resultMap,i):
+    print('input receipt {}'.format(sim_pred))
+    if sim_pred.find('年')>-1:
+        return
+    sim_pred=sim_pred.replace('ｰ','-').replace('。','.')
     sim_pred=jaconv.z2h(sim_pred,digit=True, ascii=True)
 
-    if(sim_pred.find('ｰ')==0):
+    if(sim_pred.find('-')==0):
         sim_pred=str(1)+sim_pred
-    tmpList=sim_pred.split('ｰ')
+    tmpList=sim_pred.split('-')
     tmpHead=tmpList[0]
     lstHead=re.findall(r'\d+', tmpHead)
     tmpHead=''.join(lstHead)
@@ -79,8 +80,8 @@ def getReceiptNo(sim_pred,resultMap,i):
     tmpTail=tmpList[-1][:4]
     lstTail=re.findall(r'\d+', tmpTail)
     tmpTail=''.join(lstTail)
-    # ７178408-７17
+    if tmpTail=='':
+      tmpTail='1234'
 
     resultMap['6_receiptNO']=tmpHead+'-'+tmpTail
     print('output receiptNO {}'.format(resultMap['6_receiptNO']))
-    # resultMap['pos_staff']=i

@@ -14,11 +14,11 @@ def adjustPredict(i,sim_pred,resultMap,pos_tax):
     if(i>pos_tax-2 and i<pos_tax and sim_pred.find('合') > -1):
       priceUtils.getTotalPrice(sim_pred,resultMap,i)
     # ---------------------------------staff
-    if(resultMap['pos_staff']==0):
+    # if(resultMap['pos_staff']==0):
     # if(i>pos_tax and resultMap['pos_staff']==0 and \
     #   resultMap['1_shopName']!='ファミリマート'):#get staff one more time
-      if(sim_pred.find('No.') > -1):
-        staffNoUtils.getNo(sim_pred, resultMap, i)
+    #   if(sim_pred.find('No.') > -1):
+    #     staffNoUtils.getNo(sim_pred, resultMap, i)
 
 def pos_ling_predict(i,sim_pred,resultMap):
   if(i>3 and resultMap['pos_ling']==0 and \
@@ -49,11 +49,11 @@ def getDrawboxResult(origin_result,resultMap):
 
     pos_tax=resultMap['pos_tax']
     taxUtils.getTax(origin_result[pos_tax],resultMap,pos_tax)
-    for i, sim_pred in enumerate(origin_result):#
-      if(sim_pred.find('No.')>-1):
-        staffNoUtils.getNo(sim_pred, resultMap,i)
-      if(resultMap['pos_staff']>0):
-        break
+    # for i, sim_pred in enumerate(origin_result):#
+    #   if(sim_pred.find('No.')>-1):
+    #     staffNoUtils.getNo(sim_pred, resultMap,i)
+    #   if(resultMap['pos_staff']>0):
+    #     break
     # staffNoUtils.getNo(origin_result[pos_ling+2],resultMap,pos_ling+2)#match family
     for i, sim_pred in enumerate(origin_result):
         commonUtils.adjustPredict(i,sim_pred,resultMap,pos_tax)
@@ -200,10 +200,13 @@ def parseResult(result,resultMap,im_name):
             staffNoUtils.getNo(sim_pred, resultMap, i)
         if (resultMap['pos_staff'] > 0):
             break
-    sim_pred = str(result[resultMap['pos_staff']-1][1]).strip()
-    staffNoUtils.getReceiptNo(sim_pred, resultMap, i)
-    sim_pred = str(result[resultMap['pos_staff']+1][1]).strip()
-    staffNoUtils.getReceiptNo(sim_pred, resultMap, i)
+
+    pos_staff=resultMap['pos_staff']
+    if pos_staff>0:
+        sim_pred = str(result[pos_staff-1][1]).strip()
+        staffNoUtils.getReceipt(sim_pred, resultMap, i)
+        sim_pred = str(result[pos_staff+1][1]).strip()
+        staffNoUtils.getReceipt(sim_pred, resultMap, i)
 
     for i in result:
         sim_pred = str(result[i][1]).strip()
@@ -242,6 +245,8 @@ def parseResult(result,resultMap,im_name):
         resultMap['2_city'] = '東京都'
     if resultMap['7_staffNO'] == 'none':
         resultMap['7_staffNO'] = '001'
+    if resultMap['6_receiptNO'] == 'none':
+        resultMap['6_receiptNO'] = '1-1234'
     print(resultMap)
     base_name = im_name.split('/')[-1]
     with open('./' + 'result_submit.tsv', 'a+') as f:
