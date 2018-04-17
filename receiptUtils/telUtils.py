@@ -6,10 +6,10 @@ def getTel(tmpResult,resultMap,i):
   print('input tel {}'.format(tmpResult))
   if(resultMap['pos_tel_before']>0 and tmpResult.find(' ')>-1):
     print('tel_before {}'.format(resultMap['pos_tel_before']))
-    telBefore=resultMap['tel_before'].split('：')
+    telBefore=resultMap['tel_before'].split(':')
     if(len(telBefore)>1):
       telBeforeNew=telBefore[1]
-      telAfter=tmpResult.split('：')
+      telAfter=tmpResult.split(':')
       if(len(telAfter)>1):
         telAfterNew=telAfter[1]
         lsStr1 = list(telAfterNew)
@@ -18,6 +18,8 @@ def getTel(tmpResult,resultMap,i):
             lsStr1[idx] = telBeforeNew[idx]
 
   tmpResult = jaconv.z2h(tmpResult, digit=True, ascii=True)
+  if(tmpResult.find(':')>-1):
+      tmpResult=tmpResult.split(':')[1]
   tmpResult = numberUtils.numberReplacement(tmpResult)
   strList=re.findall(r'\d+', tmpResult)
   tmpResult=''.join(strList)

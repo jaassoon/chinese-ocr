@@ -102,12 +102,16 @@ def getCity(tmpResult,resultMap):
         or tmpResult.find('患京')>-1 \
         or tmpResult.find('新宿')>-1 \
         or tmpResult.find('莫京都')>-1 \
+        or tmpResult.find('袁京都')>-1 \
         or tmpResult.find('真京都')>-1 \
         or (tmpResult.find('京都')>-1 and tmpResult.find('府')!=2)):
         resultMap['2_city']='東京都'
-    elif(tmpResult.find('鹿')>0):
+
+    elif(tmpResult.find('鹿')>-1 \
+         or tmpResult.find('児島')>-1):
         resultMap['2_city']='鹿児島県'
-    elif(tmpResult.find('和歌山')>0):
+
+    elif(tmpResult.find('和歌山')>-1):
         resultMap['2_city']='和歌山県'
 
     elif(tmpResult.find('ナ阪')>-1 \

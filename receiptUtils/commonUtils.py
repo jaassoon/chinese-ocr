@@ -134,33 +134,32 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
     return resultMap
 
 def parseResult(result,resultMap,im_name):
-    for i in result:
+    for i in result:# for trim string, convert string
         sim_pred = str(result[i][1]).strip()
         sim_pred = numberUtils.removeQuote(sim_pred)
         sim_pred = jaconv.z2h(sim_pred, digit=True, ascii=True)
         result[i][1]=sim_pred
+
+    # TODO # get all key position
+    for i in result:
+        if result[i][1].find('領 証')>-1 \
+            or result[i][1].find('領収')>-1 \
+            or result[i][1].find('収証')>-1 \
+            or result[i][1].find('領 書')>-1 \
+            or result[i][1].find('収書')>-1:
+            resultMap['pos_ling_after']=i
 
     if (resultMap['pos_ling'] < resultMap['pos_time']):  # ling and then year,match family
         resultMap['1_shopName'] = 'ファミリマート'
         resultMap['type_shop'] = 1  # two shop type
 
     for i in result:
-        sim_pred = str(result[i][1]).strip()
         if (i <= 1 and resultMap['pos_shop'] == 0):
             shopNameUtils.getShopName(sim_pred, resultMap)
         if (i > 1 and resultMap['pos_tel_after'] == 0):
             telUtils.getTel(sim_pred, resultMap, i)
 
     pos_tel = resultMap['pos_tel_after']
-    for i in result:
-        sim_pred = str(result[i][1]).strip()
-        if (i > 1):
-            if (resultMap['type_shop'] == 1 and i < pos_tel):  # Fami
-                cityUtils.getCity(sim_pred, resultMap)
-            elif (i > 1 and resultMap['2_city'] == 'none'):
-                cityUtils.getCity(sim_pred, resultMap)
-                if (resultMap['2_city'] != 'none'):
-                    break
 
     for i in result:
         sim_pred = str(result[i][1]).strip()
@@ -240,14 +239,29 @@ def parseResult(result,resultMap,im_name):
             resultMap['5_total'] = subtotal
         else:
             resultMap['5_total'] = catTotalMny
+
+    for i in result:# city parser at last
+        if (i > 1):
+            if (resultMap['type_shop'] == 1 and i < pos_tel):  # Fami
+                cityUtils.getCity(sim_pred, resultMap)
+            elif (i > 1 and resultMap['2_city'] == 'none'):
+                cityUtils.getCity(sim_pred, resultMap)
+                if (resultMap['2_city'] != 'none'):
+                    break
+                if pos_time>0 and i>pos_time:
+                    break
+                if pos_tax>0 and i>pos_tax:
+                    break
+                if pos_staff>0 and i>pos_staff:
+                    break
     if len(resultMap['3_tel'].strip()) == 0:
         resultMap['3_tel'] = '1234567890'
     if len(resultMap['2_city'].strip()) == 0:
         resultMap['2_city'] = '東京都'
     if resultMap['7_staffNO'] == 'none':
-        resultMap['7_staffNO'] = '001'
+        resultMap['7_staffNO_for_test'] = '001'
     if resultMap['6_receiptNO'] == 'none':
-        resultMap['6_receiptNO'] = '1-1234'
+        resultMap['6_receiptNO_for_test'] = '1-1234'
     print(resultMap)
     for key in resultMap:
         print('{} = {}'.format(key,resultMap[key]))

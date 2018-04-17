@@ -2,6 +2,8 @@
 def getMny(sim_pred):
   if(sim_pred.find('半')>-1):
     sim_pred=sim_pred[sim_pred.find('半'):]
+  elif(sim_pred.find('￥')>-1):
+    sim_pred=sim_pred[sim_pred.find('羊'):]
   elif(sim_pred.find('羊')>-1):
     sim_pred=sim_pred[sim_pred.find('羊'):]
   elif(sim_pred.find('毕')>-1):

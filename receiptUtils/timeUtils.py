@@ -95,6 +95,8 @@ def amendYear(sim_pred,resultMap):#2017-11-01 00:49:00
 
 def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
   sTime=resultMap['4_year']
+  if sTime=='none':
+      sTime='2017-01-01 00:00:00'
   print('output year before amend time {}'.format(sim_pred))
   if(sim_pred.find('領')>-1 \
      or sim_pred.find('収')>-1 \
@@ -103,13 +105,16 @@ def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
     print('output year before amend time,return due to...')
     return
   sim_pred=replaceTime(sim_pred)
+  iYear = getYear(sim_pred)
+
   sim_pred=sim_pred[sim_pred.find('年')+1:]
   sim_pred=sim_pred.replace('/',':')
-  iYear=getYear(sim_pred)
   iMonth=getMonth(sim_pred)
   iDay=getDay(sim_pred)
   iHour=getHour(sim_pred)
   iMin=getMin(sim_pred)
+
+  sTime = str(iYear)+sTime[4:]
   if(iMonth>0 and sTime[5:7]=='01'):
     sMonth=str(iMonth)
     if(iMonth<10):

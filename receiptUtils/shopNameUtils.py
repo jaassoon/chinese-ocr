@@ -20,6 +20,7 @@ def getShopName(tmpResult,resultMap):
     # or tmpResult.find('am')>-1 \
     ):
       resultMap['1_shopName'] = 'サークルK'
+      resultMap['1_shopName_test'] = 'unknown_shop_name'
       resultMap['pos_shop']=1
 
   if(resultMap['pos_shop']==1):
