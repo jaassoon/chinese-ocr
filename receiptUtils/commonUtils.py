@@ -1,7 +1,7 @@
 #coding:utf-8
 from receiptUtils import telUtils, staffNoUtils,shopNameUtils,commonUtils,\
 timeUtils, cityUtils,priceUtils,cardUtils,categoryUtils,taxUtils,numberUtils
-import os,cv2,datetime
+import os,cv2,datetime,jaconv
 import numpy as np
 from PIL import Image
 
@@ -14,8 +14,9 @@ def adjustPredict(i,sim_pred,resultMap,pos_tax):
     if(i>pos_tax-2 and i<pos_tax and sim_pred.find('合') > -1):
       priceUtils.getTotalPrice(sim_pred,resultMap,i)
     # ---------------------------------staff
-    if(i>pos_tax and resultMap['pos_staff']==0 and \
-      resultMap['1_shopName']!='ファミリマート'):#get staff one more time
+    if(resultMap['pos_staff']==0):
+    # if(i>pos_tax and resultMap['pos_staff']==0 and \
+    #   resultMap['1_shopName']!='ファミリマート'):#get staff one more time
       if(sim_pred.find('No.') > -1):
         staffNoUtils.getNo(sim_pred, resultMap, i)
 
@@ -48,7 +49,12 @@ def getDrawboxResult(origin_result,resultMap):
 
     pos_tax=resultMap['pos_tax']
     taxUtils.getTax(origin_result[pos_tax],resultMap,pos_tax)
-    staffNoUtils.getNo(origin_result[pos_ling+2],resultMap,pos_ling+2)#match family
+    for i, sim_pred in enumerate(origin_result):#
+      if(sim_pred.find('No.')>-1):
+        staffNoUtils.getNo(sim_pred, resultMap,i)
+      if(resultMap['pos_staff']>0):
+        break
+    # staffNoUtils.getNo(origin_result[pos_ling+2],resultMap,pos_ling+2)#match family
     for i, sim_pred in enumerate(origin_result):
         commonUtils.adjustPredict(i,sim_pred,resultMap,pos_tax)
 
@@ -119,6 +125,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
             continue
         sim_pred=sim_pred.strip()
         sim_pred=numberUtils.removeQuote(sim_pred)
+        sim_pred=jaconv.z2h(sim_pred,digit=True, ascii=True)
         resultMap['origin_result'].append(sim_pred)
         if opt.develop and i <= 5:
             with open(os.path.join("test/results", base_name.split('.')[0] + "_" + str(i) + ".txt"), 'a+') as f:
@@ -127,6 +134,12 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
     return resultMap
 
 def parseResult(result,resultMap,im_name):
+    for i in result:
+        sim_pred = str(result[i][1]).strip()
+        sim_pred = numberUtils.removeQuote(sim_pred)
+        sim_pred = jaconv.z2h(sim_pred, digit=True, ascii=True)
+        result[i][1]=sim_pred
+
     if (resultMap['pos_ling'] < resultMap['pos_time']):  # ling and then year,match family
         resultMap['1_shopName'] = 'ファミリマート'
         resultMap['type_shop'] = 1  # two shop type
@@ -175,9 +188,23 @@ def parseResult(result,resultMap,im_name):
                 if (len(sim_pred) <= 8):
                     staffNoUtils.amendStaff(sim_pred, resultMap, i)
 
-    timeUtils.amendYear(result[pos_time][1], resultMap)
+    timeUtils.amendYear(result[pos_time][1], resultMap) #FIXME do nothing
     if (pos_time > 0):
         timeUtils.amendHour(result[pos_time - 1][1], resultMap)
+        timeUtils.amendHour(result[pos_time][1], resultMap)
+        timeUtils.amendHour(result[pos_time+1][1], resultMap)
+
+    for i in result:
+        sim_pred = str(result[i][1]).strip()
+        if (sim_pred.find('No.') > -1):
+            staffNoUtils.getNo(sim_pred, resultMap, i)
+        if (resultMap['pos_staff'] > 0):
+            break
+    sim_pred = str(result[resultMap['pos_staff']-1][1]).strip()
+    staffNoUtils.getReceiptNo(sim_pred, resultMap, i)
+    sim_pred = str(result[resultMap['pos_staff']+1][1]).strip()
+    staffNoUtils.getReceiptNo(sim_pred, resultMap, i)
+
     for i in result:
         sim_pred = str(result[i][1]).strip()
         if (i > pos_time and i < pos_tax - 3):
@@ -213,7 +240,7 @@ def parseResult(result,resultMap,im_name):
         resultMap['3_tel'] = '1234567890'
     if len(resultMap['2_city'].strip()) == 0:
         resultMap['2_city'] = '東京都'
-    if len(resultMap['7_staffNO'].strip()) == 0:
+    if resultMap['7_staffNO'] == 'none':
         resultMap['7_staffNO'] = '001'
     print(resultMap)
     base_name = im_name.split('/')[-1]

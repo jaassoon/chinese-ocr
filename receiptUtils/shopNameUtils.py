@@ -11,6 +11,8 @@ def getShopName(tmpResult,resultMap):
       resultMap['1_shopName'] = 'ファミリマート'
       resultMap['pos_shop']=1
   elif(resultMap['type_shop']==1):
+    if (tmpResult.find('Y!') > -1):
+      resultMap['1_shopName'] = 'ファミマ!!'
     resultMap['1_shopName'] = 'ファミマ!!'
     resultMap['pos_shop']=1
   elif(  tmpResult.find('ルツ')>-1 \

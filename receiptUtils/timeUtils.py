@@ -103,17 +103,31 @@ def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
     print('output year before amend time,return due to...')
     return
   sim_pred=replaceTime(sim_pred)
+  sim_pred=sim_pred[sim_pred.find('年')+1:]
   sim_pred=sim_pred.replace('/',':')
   iYear=getYear(sim_pred)
   iMonth=getMonth(sim_pred)
   iDay=getDay(sim_pred)
   iHour=getHour(sim_pred)
   iMin=getMin(sim_pred)
+  if(iMonth>0 and sTime[5:7]=='01'):
+    sMonth=str(iMonth)
+    if(iMonth<10):
+        sMonth='0'+iMonth
+    sTime=sTime[0:5]+sMonth+sTime[7:]
+
+  if(iDay>0 and sTime[8:10]=='01'):
+    sMonth=str(iDay)
+    if(iDay<10):
+        sDay='0'+iDay
+    sTime=sTime[0:8]+sMonth+sTime[10:]
+
   if(iHour>0 and sTime[11:13]=='00'):
     sHour=str(iHour)
     if(iHour<10):
       sHour='0'+sHour
     sTime=sTime[0:11]+sHour+sTime[13:]
+
   if(iMin>0 and sTime[14:16]=='00'):
     sMin=str(iMin)
     if(iMin<10):
