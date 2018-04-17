@@ -26,7 +26,10 @@ def getCity(tmpResult,resultMap):
     #below is group
     elif(tmpResult.find('高知')>-1):
         resultMap['2_city']='高知県'
-    elif(tmpResult.find('愛知')>-1 or tmpResult.find('知')>-1):
+    elif(tmpResult.find('愛知')>-1 \
+        or tmpResult.find('名古')>-1 \
+        or tmpResult.find('古屋')>-1 \
+        or tmpResult.find('知')>-1):
         resultMap['2_city']='愛知県'
 
     elif(tmpResult.find('三重')>-1 \
@@ -56,7 +59,9 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city']='秋田県'
     elif(tmpResult.find('滋')>-1):
         resultMap['2_city']='滋賀県'
-    elif(tmpResult.find('千')>-1):
+    elif tmpResult.find('千')>-1 \
+        or tmpResult.find('葉市')>-1 \
+        or tmpResult.find('川市')>-1 :
         resultMap['2_city']='千葉県'
     elif(tmpResult.find('森')>-1):
         resultMap['2_city']='青森県'
@@ -68,6 +73,7 @@ def getCity(tmpResult,resultMap):
         resultMap['2_city']='神奈川県'
     elif(tmpResult.find('哀京都')>-1 \
         or tmpResult.find('患京')>-1 \
+        or tmpResult.find('新宿')>-1 \
         or tmpResult.find('莫京都')>-1 \
         or tmpResult.find('真京都')>-1 \
         or (tmpResult.find('京都')>-1 and tmpResult.find('府')!=2)):

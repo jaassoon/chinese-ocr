@@ -249,6 +249,9 @@ def parseResult(result,resultMap,im_name):
     if resultMap['6_receiptNO'] == 'none':
         resultMap['6_receiptNO'] = '1-1234'
     print(resultMap)
+    for key in resultMap:
+        print('{} = {}'.format(key,resultMap[key]))
+
     base_name = im_name.split('/')[-1]
     with open('./' + 'result_submit.tsv', 'a+') as f:
         f.write(base_name.split('.')[0] + '.jpg-----------' + str(datetime.datetime.now().time()) + '\r\n')
