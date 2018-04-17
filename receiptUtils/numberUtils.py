@@ -28,6 +28,7 @@ def numberReplacement(tmpResult):
       .replace('C', '0') \
       .replace('１', '1') \
       .replace('l', '1') \
+      .replace('ﾕ', '1') \
       .replace('L', '1') \
       .replace(']', '1') \
       .replace('J', '1') \
