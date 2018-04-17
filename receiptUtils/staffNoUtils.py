@@ -43,23 +43,7 @@ def getNo(sim_pred,resultMap,i):
     # tmpStrs=''.join(lstStaff)
     resultMap['7_staffNO']=tmpStrs
     # 08
-    #
-    # if(sim_pred.find('ｰ')==0):
-    #     sim_pred=str(1)+sim_pred
-    # tmpList=sim_pred.split('ｰ')
-    # tmpHead=tmpList[0]
-    # lstHead=re.findall(r'\d+', tmpHead)
-    # tmpHead=''.join(lstHead)
-    # if(tmpHead==''):
-    #     tmpHead='1'
-    # tmpTail=tmpList[-1][:4]
-    # lstTail=re.findall(r'\d+', tmpTail)
-    # tmpTail=''.join(lstTail)
-    # # ７178408-７17
-
-    # resultMap['6_receiptNO']=tmpHead+'-'+tmpTail
     print('output staffNo {}'.format(resultMap['7_staffNO']))
-    # print('output receiptNO {}'.format(resultMap['6_receiptNO']))
     resultMap['pos_staff']=i
 
 def getReceipt(sim_pred,resultMap,i):
@@ -68,7 +52,7 @@ def getReceipt(sim_pred,resultMap,i):
         return
     sim_pred=sim_pred.replace('ｰ','-').replace('。','.')
     sim_pred=jaconv.z2h(sim_pred,digit=True, ascii=True)
-
+    sim_pred = numberUtils.numberReplacement(sim_pred)
     if(sim_pred.find('-')==0):
         sim_pred=str(1)+sim_pred
     tmpList=sim_pred.split('-')

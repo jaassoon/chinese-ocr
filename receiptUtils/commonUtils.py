@@ -205,8 +205,9 @@ def parseResult(result,resultMap,im_name):
     if pos_staff>0:
         sim_pred = str(result[pos_staff-1][1]).strip()
         staffNoUtils.getReceipt(sim_pred, resultMap, i)
-        sim_pred = str(result[pos_staff+1][1]).strip()
-        staffNoUtils.getReceipt(sim_pred, resultMap, i)
+        if pos_staff+1<len(result):
+            sim_pred = str(result[pos_staff+1][1]).strip()
+            staffNoUtils.getReceipt(sim_pred, resultMap, i)
 
     for i in result:
         sim_pred = str(result[i][1]).strip()
