@@ -29,7 +29,7 @@ def getCardNo(tmpResult,resultMap,i):
     #   return
     resultMap['8_pointcard'] = tmpResult
     resultMap['pos_card_after']=i
-    print('output card {}'.format(tmpResult))
+    print('output card-------------  {}'.format(tmpResult))
 
 def getCardPos(resultMap, result):
     pos_ling_after = resultMap['pos_ling_after']

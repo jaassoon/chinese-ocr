@@ -3,7 +3,6 @@ from receiptUtils import numberUtils
 import re,jaconv
 
 def getTel(tmpResult,resultMap,i):
-
   print('input tel {}'.format(tmpResult))
   if(tmpResult.find('年')>-1):
       return
@@ -21,6 +20,9 @@ def getTel(tmpResult,resultMap,i):
             lsStr1[idx] = telBeforeNew[idx]
 
   tmpResult = jaconv.z2h(tmpResult, digit=True, ascii=True)
+
+  if(tmpResult.find('話')>-1):
+      tmpResult=tmpResult.split('話')[1]
   if(tmpResult.find(':')>-1):
       tmpResult=tmpResult.split(':')[1]
   tmpResult = numberUtils.numberReplacement(tmpResult)

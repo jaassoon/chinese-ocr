@@ -14,8 +14,8 @@ def getMny(sim_pred):
     sim_pred=sim_pred[sim_pred.find('平'):]
   elif(sim_pred.find('洋')>-1):
     sim_pred=sim_pred[sim_pred.find('洋'):]
-  else:
-    sim_pred=''
+  # else:
+  #   sim_pred=''
   return sim_pred
 
 def removeQuote(sim_pred):
@@ -46,6 +46,7 @@ def numberReplacement(tmpResult):
       .replace('S', '5') \
       .replace('６', '6') \
       .replace('e', '6') \
+      .replace('E', '6') \
       .replace('７', '7')\
       .replace('８', '8')\
       .replace('B', '8')\

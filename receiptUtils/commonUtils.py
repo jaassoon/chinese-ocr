@@ -71,7 +71,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
     boxesX2 = sorted(boxes, key=lambda x: x[2])
     xEnd=boxesX2[-1][2]
     previousY=0
-    resultMap={'1_shopName':'ファミア!!','2_city':'none',
+    resultMap={'1_shopName':'none','2_city':'none',
               '3_tel':'1234567890','4_year':'none',
               '5_total':0,
               '6_receiptNO':'none',
@@ -291,7 +291,8 @@ def parseResult(result,resultMap,im_name):
         resultMap['6_receiptNO_for_test'] = '1-1234'
     if pos_tax>0 and result[pos_tax][1].find('づ')>-1:
         resultMap['1_shopName']='サンクス'
-    # print(resultMap)
+    if resultMap['1_shopName']=='none':
+        resultMap['1_shopName'] = 'サンクス'
     for key in resultMap:
         print('{} = {}'.format(key,resultMap[key]))
 
