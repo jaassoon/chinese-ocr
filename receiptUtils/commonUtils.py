@@ -100,6 +100,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
               'pos_subtotal':0,
               'pos_tax':0,
               'pos_card':0,
+              'pos_card_after':0,
               'type_shop':0}
     for box in boxes:
         if np.linalg.norm(box[0] - box[1]) < 5 or np.linalg.norm(box[3] - box[0]) < 5:
@@ -189,19 +190,18 @@ def parseResult(result,resultMap,im_name):
         sim_pred = str(result[i][1])
         if (i > pos_time and i < pos_tax - 3):
             categoryUtils.getCategoryAfter(sim_pred, resultMap, i)
-        if (i > pos_tax + 1 and resultMap['pos_card_after'] == 0):
-            cardUtils.getCardNo(sim_pred, resultMap, i)
+        # if (i > pos_tax + 1 and resultMap['pos_card_after'] == 0):
+        #     cardUtils.getCardNo(sim_pred, resultMap, i)
 
-    for i in result:
-        if pos_tax>0 and i<pos_tax:
-            continue
-        if pos_time>0 and i<pos_time:
-            continue
-        if pos_ling_after>0 and i<pos_ling_after:
-            continue
-        sim_pred = str(result[i][1])
-        if (i > pos_tax + 1 and resultMap['pos_card_after'] == 0):
-            cardUtils.getCardNo(sim_pred, resultMap, i)
+    cardUtils.getCardPos(resultMap,result)
+    pos_card_after=resultMap['pos_card_after']
+
+    if pos_card_after>0:
+        cardUtils.getCardNo(str(result[pos_card_after][1]), resultMap, pos_card_after)
+    if pos_card_after+1<len(result):
+        cardUtils.getCardNo(str(result[pos_card_after+1][1]), resultMap, pos_card_after+1)
+    if pos_card_after>1:
+        cardUtils.getCardNo(str(result[pos_card_after-1][1]), resultMap, pos_card_after-1)
 
     resultMap['9_category'] = len(resultMap['suffix_catPrice'])
     catTotalMny = 0
@@ -230,9 +230,9 @@ def parseResult(result,resultMap,im_name):
 
     for i in result:# tel parser at last
         sim_pred = result[i][1]
-        if (resultMap['pos_tel_after'] == 'none'):
+        if (resultMap['pos_tel_after'] == 0):
             telUtils.getTel(sim_pred, resultMap, i)
-            if (resultMap['pos_tel_after'] != 'none'):
+            if (resultMap['pos_tel_after'] != 0):
                 break
             if pos_time>0 and i>pos_time:
                 break
@@ -289,7 +289,9 @@ def parseResult(result,resultMap,im_name):
         resultMap['7_staffNO_for_test'] = '001'
     if resultMap['6_receiptNO'] == 'none':
         resultMap['6_receiptNO_for_test'] = '1-1234'
-    print(resultMap)
+    if pos_tax>0 and result[pos_tax][1].find('づ')>-1:
+        resultMap['1_shopName']='サンクス'
+    # print(resultMap)
     for key in resultMap:
         print('{} = {}'.format(key,resultMap[key]))
 
