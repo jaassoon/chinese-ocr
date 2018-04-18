@@ -54,6 +54,8 @@ def getReceipt(sim_pred,resultMap,i):
         return
     sim_pred=sim_pred.replace('ｰ','-').replace('。','.')
     sim_pred=jaconv.z2h(sim_pred,digit=True, ascii=True)
+    if sim_pred.find('-')==-1:
+        return
     sim_pred = numberUtils.numberReplacement(sim_pred)
     if(sim_pred.find('-')==0):
         sim_pred=str(1)+sim_pred
@@ -69,5 +71,6 @@ def getReceipt(sim_pred,resultMap,i):
     if tmpTail=='':
       tmpTail='1234'
 
-    resultMap['6_receiptNO']=tmpHead+'-'+tmpTail
+    resultMap['6_receiptNO']=tmpHead+'ｰ'+tmpTail
+    # resultMap['6_receiptNO']=tmpHead+'-'+tmpTail
     print('output receiptNO {}'.format(resultMap['6_receiptNO']))

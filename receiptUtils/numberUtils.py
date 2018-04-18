@@ -24,6 +24,7 @@ def removeQuote(sim_pred):
 
 def numberReplacement(tmpResult):
   tmpResult = tmpResult\
+      .replace('O', '0') \
       .replace('０', '0') \
       .replace('の', '0') \
       .replace('G', '0') \

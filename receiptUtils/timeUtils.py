@@ -9,6 +9,8 @@ def getYear(sim_pred):
   sYear=''.join(lstYear)
   if(len(sYear)!=4):
     sYear='2017'
+  if int(sYear)>2019 or int(sYear)<2016:
+      sYear='2017'
   return int(sYear)
 
 def getMonth(sim_pred):
@@ -40,6 +42,7 @@ def getDay(sim_pred):
     iDay=1
   else:
     sDay=sim_pred[iPosDay-2:iPosDay]
+    sDay=numberUtils.numberReplacement(sDay)
     lstDate=re.findall(r'\d+', sDay)
     sDay=''.join(lstDate)
     if(sDay==''):
@@ -100,6 +103,10 @@ def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
   print('output year before amend time {}'.format(sim_pred))
   if(sim_pred.find('領')>-1 \
      or sim_pred.find('収')>-1 \
+     or sim_pred.find('ｰ')>-1 \
+     or sim_pred.find('責')>-1 \
+     or sim_pred.find('No')>-1 \
+     or sim_pred.find('NO')>-1 \
      or sim_pred.find('書')>-1 \
      or sim_pred.find('証')>-1):
     print('output year before amend time,return due to...')
@@ -144,7 +151,7 @@ def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
 def replaceTime(sim_pred):
   sim_pred=sim_pred.replace('年日','年9').replace('  ',' ')\
     .replace('目','日').replace('曰','日').replace('巴','日').replace('回','日').replace('l','1').replace(';',':')\
-    .replace('局','月').replace('l','1').replace(';',':')\
+    .replace('局','月').replace('l','1').replace('ﾕ','1').replace(';',':')\
     .replace('時',':').replace('跨',':').replace('府',':')\
     .replace('》',' ').replace(')',' ') # yyyy-mm-dd x)Time
   return sim_pred

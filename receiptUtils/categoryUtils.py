@@ -1,10 +1,16 @@
 #coding:utf-8
 from receiptUtils import numberUtils
-import re
+import re,jaconv
 
 def getCategoryAfter(tmpResult,resultMap,i):
+  tmpResult = jaconv.z2h(tmpResult, digit=True, ascii=True)
+  # not minus ｰ
   if(tmpResult.find('責')>-1 \
      or tmpResult.find('No')>-1 \
+     or tmpResult.find('点')>-1 \
+     or tmpResult.find('×')>-1 \
+     # or tmpResult.find('-')>-1 \
+     or tmpResult.find('ｰ')>-1 \
      or tmpResult.find('NO')>-1):
       return
   print('input_{} category {}'.format(i,tmpResult))
@@ -19,6 +25,9 @@ def getCategoryAfter(tmpResult,resultMap,i):
     iCatPrice=0
   else:
     iCatPrice=int(sCatPrice)
-  if(iCatPrice>0):
+
+  if tmpResult.find('-')>-1:
+      iCatPrice*=-1
+  if(iCatPrice !=0):
     resultMap['suffix_catPrice'].append(iCatPrice)
     print('output iCatPrice------------- {}'.format(iCatPrice))

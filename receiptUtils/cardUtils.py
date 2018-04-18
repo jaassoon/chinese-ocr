@@ -3,7 +3,8 @@ from receiptUtils import numberUtils
 import re
 def getCardNo(tmpResult,resultMap,i):
   print('input card {}'.format(tmpResult))
-  tmpResult=tmpResult.replace('冷','*').replace('米','*').replace('x','*').replace('深','*').replace('氷','*')
+  tmpResult=tmpResult.replace('冷','*').replace('米','*').replace('x','*').replace('深','*').replace('氷','*')\
+      .replace('凍','*').replace('法','*').replace('※','*')
   if (tmpResult.find('****') > -1 and (tmpResult.find('TP') == -1 or \
     tmpResult.find('ト') == -1)):
     tmpResult=numberUtils.numberReplacement(tmpResult)
@@ -46,8 +47,16 @@ def getCardPos(resultMap, result):
             continue
         if result[i][1].find('対条') > -1 \
                 or result[i][1].find('会員') > -1 \
+                or result[i][1].find('会具') > -1 \
+                or result[i][1].find('会貝') > -1 \
                 or result[i][1].find('番号') > -1 \
+                or result[i][1].find('貝套') > -1 \
+                or result[i][1].find('套号') > -1 \
+                or result[i][1].find('具番') > -1 \
+                or result[i][1].find('番写') > -1 \
                 or result[i][1].find('員番') > -1 \
+                or result[i][1].find('対策') > -1 \
+                or result[i][1].find('策会') > -1 \
                 or result[i][1].find('対象') > -1:
             resultMap['pos_card_after'] = i
 
