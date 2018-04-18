@@ -16,7 +16,8 @@ def getCardNo(tmpResult,resultMap,i):
     if tmpHead=='':
         tmpHead='1234'
     if len(tmpHead)<4:
-        tmpHead=str(1)*(4-len(tmpHead))+tmpHead
+        tmpHead=str(9)*(4-len(tmpHead))+tmpHead
+        # tmpHead=str(1)*(4-len(tmpHead))+tmpHead
     strList=re.findall(r'\d+', tmpTail)
     tmpTail=''.join(strList)
     if tmpTail=='':

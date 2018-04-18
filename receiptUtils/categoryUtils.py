@@ -3,6 +3,10 @@ from receiptUtils import numberUtils
 import re
 
 def getCategoryAfter(tmpResult,resultMap,i):
+  if(tmpResult.find('責')>-1 \
+     or tmpResult.find('No')>-1 \
+     or tmpResult.find('NO')>-1):
+      return
   print('input_{} category {}'.format(i,tmpResult))
   tmpResult=numberUtils.getMny(tmpResult)
   if(tmpResult==''):

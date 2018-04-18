@@ -103,6 +103,8 @@ def getCity(tmpResult,resultMap):
         or tmpResult.find('患京')>-1 \
         or tmpResult.find('新宿')>-1 \
         or tmpResult.find('代田区')>-1 \
+        or tmpResult.find('港区')>-1 \
+        or tmpResult.find('買京都')>-1 \
         or tmpResult.find('莫京都')>-1 \
         or tmpResult.find('袁京都')>-1 \
         or tmpResult.find('真京都')>-1 \

@@ -200,6 +200,8 @@ def parseResult(result,resultMap,im_name):
         cardUtils.getCardNo(str(result[pos_card_after][1]), resultMap, pos_card_after)
     if pos_card_after+1<len(result):
         cardUtils.getCardNo(str(result[pos_card_after+1][1]), resultMap, pos_card_after+1)
+    if pos_card_after+2<len(result):
+        cardUtils.getCardNo(str(result[pos_card_after+2][1]), resultMap, pos_card_after+2)
     if pos_card_after>1:
         cardUtils.getCardNo(str(result[pos_card_after-1][1]), resultMap, pos_card_after-1)
 
@@ -222,7 +224,7 @@ def parseResult(result,resultMap,im_name):
             if (catTotalMny - lastMny == lastMny):
                 catTotalMny = lastMny
                 resultMap['9_category'] = catCount - 1
-    if (resultMap['5_total'] == 0):
+    if (resultMap['5_total'] <100):
         if (subtotal > 0):
             resultMap['5_total'] = subtotal
         else:
@@ -289,7 +291,9 @@ def parseResult(result,resultMap,im_name):
         resultMap['7_staffNO_for_test'] = '001'
     if resultMap['6_receiptNO'] == 'none':
         resultMap['6_receiptNO_for_test'] = '1-1234'
-    if pos_tax>0 and result[pos_tax][1].find('づ')>-1:
+    if pos_tax>0 and \
+        (result[pos_tax][1].find('づ')>-1 \
+         or result[pos_tax][1].find('う')>-1):
         resultMap['1_shopName']='サンクス'
     if resultMap['1_shopName']=='none':
         resultMap['1_shopName'] = 'サンクス'

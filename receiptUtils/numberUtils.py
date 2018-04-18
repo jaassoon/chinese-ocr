@@ -34,6 +34,7 @@ def numberReplacement(tmpResult):
       .replace('L', '1') \
       .replace(']', '1') \
       .replace('J', '1') \
+      .replace('i', '1') \
       .replace('Z', '1') \
       .replace('２', '2') \
       .replace('?', '2') \
