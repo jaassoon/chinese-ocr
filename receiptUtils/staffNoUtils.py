@@ -1,5 +1,5 @@
 #coding:utf-8
-from receiptUtils import numberUtils
+from receiptUtils import numberUtils,priceUtils
 import re,jaconv
 
 def isStaffStr(sim_pred):
@@ -49,6 +49,8 @@ def getNo(sim_pred,resultMap,i):
 def getReceipt(sim_pred,resultMap,i):
     print('input receipt {}'.format(sim_pred))
     if sim_pred.find('年')>-1:
+        return
+    if priceUtils.checkMnyStr(sim_pred):
         return
     sim_pred=sim_pred.replace('ｰ','-').replace('。','.')
     sim_pred=jaconv.z2h(sim_pred,digit=True, ascii=True)

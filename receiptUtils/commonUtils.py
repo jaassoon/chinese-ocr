@@ -1,6 +1,6 @@
 #coding:utf-8
 from receiptUtils import telUtils, staffNoUtils,shopNameUtils,commonUtils,\
-timeUtils, cityUtils,priceUtils,cardUtils,categoryUtils,taxUtils,numberUtils
+timeUtils, cityUtils,priceUtils,cardUtils,categoryUtils,taxUtils,numberUtils,lingUtils
 import os,cv2,datetime,jaconv
 import numpy as np
 from PIL import Image
@@ -94,6 +94,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
               'pos_card_after':0,
               'pos_staff':0,
               'pos_ling':0,
+              'pos_ling_after':0,
               'pos_category':0,
               'pos_total':0,
               'pos_subtotal':0,
@@ -134,37 +135,23 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
     return resultMap
 
 def parseResult(result,resultMap,im_name):
-    for i in result:# for trim string, convert string
+    for i in result:# for trim string, convert string_______step 1
         sim_pred = str(result[i][1]).strip()
         sim_pred = numberUtils.removeQuote(sim_pred)
         sim_pred = jaconv.z2h(sim_pred, digit=True, ascii=True)
         result[i][1]=sim_pred
 
     # TODO # get all key position
-    for i in result:
-        if result[i][1].find('領 証')>-1 \
-            or result[i][1].find('領収')>-1 \
-            or result[i][1].find('収証')>-1 \
-            or result[i][1].find('領 書')>-1 \
-            or result[i][1].find('収書')>-1:
-            resultMap['pos_ling_after']=i
+    # ___________________________________________________step 2
+    lingUtils.getPosLing(resultMap,result)
+    pos_ling_after=resultMap['pos_ling_after']
 
-    if (resultMap['pos_ling'] < resultMap['pos_time']):  # ling and then year,match family
-        resultMap['1_shopName'] = 'ファミリマート'
-        resultMap['type_shop'] = 1  # two shop type
+    # if (resultMap['pos_ling'] < resultMap['pos_time']):  # ling and then year,match family
+    #     resultMap['1_shopName'] = 'ファミリマート'
+    #     resultMap['type_shop'] = 1  # two shop type
 
     for i in result:
-        if (i <= 1 and resultMap['pos_shop'] == 0):
-            shopNameUtils.getShopName(sim_pred, resultMap)
-        if (i > 1 and resultMap['pos_tel_after'] == 0):
-            telUtils.getTel(sim_pred, resultMap, i)
-
-    pos_tel = resultMap['pos_tel_after']
-
-    for i in result:
-        sim_pred = str(result[i][1]).strip()
-        if (i > 1 and resultMap['2_city'] == 'none'):
-            cityUtils.getCity(sim_pred, resultMap)
+        sim_pred = str(result[i][1])
         if (i > 3 and resultMap['pos_time_after'] == 0):
             if (sim_pred.find('年') > -1):
                 resultMap['pos_time_after'] = i
@@ -176,16 +163,6 @@ def parseResult(result,resultMap,im_name):
 
     pos_time = resultMap['pos_time_after']
     pos_tax = resultMap['pos_tax_after']
-    if (resultMap['1_shopName'] == 'ファミリマート'):
-        if (resultMap['pos_time'] + 1 == resultMap['pos_staff']):
-            for i in range(pos_time + 1, pos_time + 4):
-                sim_pred = str(result[i][1]).strip()
-                if (sim_pred.find('-') == 1 and len(sim_pred) <= 8):
-                    sim_pred = numberUtils.numberReplacement(sim_pred)
-                    if (sim_pred[0].isdigit() and sim_pred[0] != resultMap['6_receiptNO'][0]):
-                        resultMap['6_receiptNO'] = sim_pred[0] + resultMap['6_receiptNO'][1:]
-                if (len(sim_pred) <= 8):
-                    staffNoUtils.amendStaff(sim_pred, resultMap, i)
 
     timeUtils.amendYear(result[pos_time][1], resultMap) #FIXME do nothing
     if (pos_time > 0):
@@ -194,7 +171,7 @@ def parseResult(result,resultMap,im_name):
         timeUtils.amendHour(result[pos_time+1][1], resultMap)
 
     for i in result:
-        sim_pred = str(result[i][1]).strip()
+        sim_pred = str(result[i][1])
         if (sim_pred.find('No.') > -1):
             staffNoUtils.getNo(sim_pred, resultMap, i)
         if (resultMap['pos_staff'] > 0):
@@ -202,16 +179,27 @@ def parseResult(result,resultMap,im_name):
 
     pos_staff=resultMap['pos_staff']
     if pos_staff>0:
-        sim_pred = str(result[pos_staff-1][1]).strip()
+        sim_pred = str(result[pos_staff-1][1])
         staffNoUtils.getReceipt(sim_pred, resultMap, i)
         if pos_staff+1<len(result):
             sim_pred = str(result[pos_staff+1][1]).strip()
             staffNoUtils.getReceipt(sim_pred, resultMap, i)
 
     for i in result:
-        sim_pred = str(result[i][1]).strip()
+        sim_pred = str(result[i][1])
         if (i > pos_time and i < pos_tax - 3):
             categoryUtils.getCategoryAfter(sim_pred, resultMap, i)
+        if (i > pos_tax + 1 and resultMap['pos_card_after'] == 0):
+            cardUtils.getCardNo(sim_pred, resultMap, i)
+
+    for i in result:
+        if pos_tax>0 and i<pos_tax:
+            continue
+        if pos_time>0 and i<pos_time:
+            continue
+        if pos_ling_after>0 and i<pos_ling_after:
+            continue
+        sim_pred = str(result[i][1])
         if (i > pos_tax + 1 and resultMap['pos_card_after'] == 0):
             cardUtils.getCardNo(sim_pred, resultMap, i)
 
@@ -240,20 +228,59 @@ def parseResult(result,resultMap,im_name):
         else:
             resultMap['5_total'] = catTotalMny
 
+    for i in result:# tel parser at last
+        sim_pred = result[i][1]
+        if (resultMap['pos_tel_after'] == 'none'):
+            telUtils.getTel(sim_pred, resultMap, i)
+            if (resultMap['pos_tel_after'] != 'none'):
+                break
+            if pos_time>0 and i>pos_time:
+                break
+            if pos_ling_after>0 and i>pos_ling_after:
+                break
+            if pos_tax>0 and i>pos_tax:
+                break
+            if pos_staff>0 and i>pos_staff:
+                break
+
+    for i in result:# shop name parser at last
+        sim_pred = result[i][1]
+        if (resultMap['1_shopName'] == 'none'):
+            shopNameUtils.getShopName(sim_pred, resultMap)
+            if (resultMap['1_shopName'] != 'none'):
+                break
+            if pos_time>0 and i>pos_time:
+                break
+            if pos_ling_after>0 and i>pos_ling_after:
+                break
+            if pos_tax>0 and i>pos_tax:
+                break
+            if pos_staff>0 and i>pos_staff:
+                break
+
     for i in result:# city parser at last
-        if (i > 1):
-            if (resultMap['type_shop'] == 1 and i < pos_tel):  # Fami
-                cityUtils.getCity(sim_pred, resultMap)
-            elif (i > 1 and resultMap['2_city'] == 'none'):
-                cityUtils.getCity(sim_pred, resultMap)
-                if (resultMap['2_city'] != 'none'):
-                    break
-                if pos_time>0 and i>pos_time:
-                    break
-                if pos_tax>0 and i>pos_tax:
-                    break
-                if pos_staff>0 and i>pos_staff:
-                    break
+        sim_pred=result[i][1]
+        if (i > 1 and resultMap['2_city'] == 'none'):
+            cityUtils.getCity(sim_pred, resultMap)
+            if (resultMap['2_city'] != 'none'):
+                break
+            if pos_time>0 and i>pos_time:
+                break
+            if pos_tax>0 and i>pos_tax:
+                break
+            if pos_staff>0 and i>pos_staff:
+                break
+    if (resultMap['1_shopName'] == 'ファミリマート'):
+        if (resultMap['pos_time'] + 1 == resultMap['pos_staff']):
+            for i in range(pos_time + 1, pos_time + 4):
+                sim_pred = str(result[i][1]).strip()
+                if (sim_pred.find('-') == 1 and len(sim_pred) <= 8):
+                    sim_pred = numberUtils.numberReplacement(sim_pred)
+                    if (sim_pred[0].isdigit() and sim_pred[0] != resultMap['6_receiptNO'][0]):
+                        resultMap['6_receiptNO'] = sim_pred[0] + resultMap['6_receiptNO'][1:]
+                if (len(sim_pred) <= 8):
+                    staffNoUtils.amendStaff(sim_pred, resultMap, i)
+
     if len(resultMap['3_tel'].strip()) == 0:
         resultMap['3_tel'] = '1234567890'
     if len(resultMap['2_city'].strip()) == 0:

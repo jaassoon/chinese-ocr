@@ -86,6 +86,7 @@ def getCity(tmpResult,resultMap):
     elif(tmpResult.find('滋')>-1):
         resultMap['2_city']='滋賀県'
     elif tmpResult.find('千')>-1 \
+        or tmpResult.find('船橋')>-1 \
         or tmpResult.find('葉県')>-1 \
         or tmpResult.find('葉市')>-1 \
         or tmpResult.find('川市')>-1 :

@@ -31,3 +31,12 @@ def getSubTotalPrice(sim_pred,resultMap,i):
   resultMap['b_subtotal']=iTotal
   if(resultMap['b_subtotal']>0):
     print('output total------------- {}'.format(resultMap['b_subtotal']))
+
+def checkMnyStr(sim_pred):
+    return sim_pred.find('半') > -1 \
+        or (sim_pred.find('￥') > -1) \
+        or (sim_pred.find('羊') > -1) \
+        or (sim_pred.find('毕') > -1) \
+        or (sim_pred.find('浄') > -1) \
+        or (sim_pred.find('平') > -1) \
+        or (sim_pred.find('洋') > -1)

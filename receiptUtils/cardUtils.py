@@ -3,7 +3,7 @@ from receiptUtils import numberUtils
 import re
 def getCardNo(tmpResult,resultMap,i):
   print('input card {}'.format(tmpResult))
-  tmpResult=tmpResult.replace('冷','*').replace('米','*').replace('x','*')
+  tmpResult=tmpResult.replace('冷','*').replace('米','*').replace('x','*').replace('深','*').replace('氷','*')
   if (tmpResult.find('******') > -1 and (tmpResult.find('TP') == -1 or \
     tmpResult.find('ト') == -1)):
     tmpResult=numberUtils.numberReplacement(tmpResult)

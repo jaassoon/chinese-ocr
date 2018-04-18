@@ -3,7 +3,10 @@ from receiptUtils import numberUtils
 import re,jaconv
 
 def getTel(tmpResult,resultMap,i):
+
   print('input tel {}'.format(tmpResult))
+  if(tmpResult.find('年')>-1):
+      return
   if(resultMap['pos_tel_before']>0 and tmpResult.find(' ')>-1):
     print('tel_before {}'.format(resultMap['pos_tel_before']))
     telBefore=resultMap['tel_before'].split(':')
