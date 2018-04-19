@@ -1,5 +1,5 @@
 #coding:utf-8
-from receiptUtils import numberUtils
+from receiptUtils import numberUtils,priceUtils
 import re,jaconv
 
 def getCategoryAfter(tmpResult,resultMap,i):
@@ -12,6 +12,8 @@ def getCategoryAfter(tmpResult,resultMap,i):
      # or tmpResult.find('-')>-1 \
      or tmpResult.find('ｰ')>-1 \
      or tmpResult.find('NO')>-1):
+      return
+  if not priceUtils.checkMnyStr(tmpResult):
       return
   print('input_{} category {}'.format(i,tmpResult))
   tmpResult=numberUtils.getMny(tmpResult)

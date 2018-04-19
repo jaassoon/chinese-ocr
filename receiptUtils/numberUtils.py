@@ -43,6 +43,7 @@ def numberReplacement(tmpResult):
       .replace('３', '3') \
       .replace('４', '4')\
       .replace('A', '4')\
+      .replace('d', '4')\
       .replace('５', '5') \
       .replace('F', '5') \
       .replace('S', '5') \
