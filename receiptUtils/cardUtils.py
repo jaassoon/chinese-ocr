@@ -17,7 +17,7 @@ def getCardNo(tmpResult,resultMap,i):
   print('input card {}'.format(tmpResult))
   tmpResult=tmpResult.replace('冷','*').replace('米','*').replace('x','*').replace('深','*').replace('氷','*')\
       .replace('凍','*').replace('法','*').replace('※','*').replace('Q','0')
-  if (tmpResult.find('****') > -1 and (tmpResult.find('TP') == -1 or \
+  if (tmpResult.find('***') > -1 and (tmpResult.find('TP') == -1 or \
     tmpResult.find('ト') == -1)):
     tmpResult=numberUtils.numberReplacement(tmpResult)
     if(tmpResult.find('号')>-1):

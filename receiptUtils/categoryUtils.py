@@ -11,6 +11,7 @@ def getCategoryAfter(tmpResult,resultMap,i):
      or tmpResult.find('×')>-1 \
      # or tmpResult.find('-')>-1 \
      or tmpResult.find('ｰ')>-1 \
+     or tmpResult.find(':')>-1 \
      or tmpResult.find('NO')>-1):
       return
   if not priceUtils.checkMnyStr(tmpResult):

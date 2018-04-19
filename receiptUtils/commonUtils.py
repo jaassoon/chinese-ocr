@@ -185,7 +185,7 @@ def parseResult(result,resultMap,im_name):
                 resultMap['pos_time_after'] = i
     pos_time = resultMap['pos_time_after']
 
-    timeUtils.amendYear(result[pos_time][1], resultMap) #FIXME do nothing
+    # timeUtils.amendYear(result[pos_time][1], resultMap) #FIXME do nothing
     if (pos_time > 0):
         timeUtils.amendHour(result[pos_time - 1][1], resultMap)
         timeUtils.amendHour(result[pos_time][1], resultMap)
@@ -275,10 +275,10 @@ def parseResult(result,resultMap,im_name):
                 break
             if pos_staff>0 and i>pos_staff:
                 break
-
+    # city
     for i in result:# city parser at last
         sim_pred=result[i][1]
-        if (i > 1 and resultMap['2_city'] == 'none'):
+        if (resultMap['2_city'] == 'none'):
             cityUtils.getCity(sim_pred, resultMap)
             if (resultMap['2_city'] != 'none'):
                 break
@@ -312,7 +312,10 @@ def parseResult(result,resultMap,im_name):
 
     if len(resultMap['2_city'].strip()) == 0:
         resultMap['2_city'] = '東京都'
-    if len(resultMap['3_tel'].strip()) == 'none':
+    if resultMap['3_tel'] == 'none':
+        resultMap['test_tel'] = 'unknown_tel'
+    if len(resultMap['3_tel'].strip()) == 0:
+        resultMap['3_tel'] = 'none'
         resultMap['test_tel'] = 'unknown_tel'
 
     if resultMap['6_receiptNO'] == 'none':

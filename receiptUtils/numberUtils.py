@@ -27,7 +27,6 @@ def numberReplacement(tmpResult):
       .replace('O', '0') \
       .replace('０', '0') \
       .replace('の', '0') \
-      .replace('G', '0') \
       .replace('C', '0') \
       .replace('１', '1') \
       .replace('l', '1') \
@@ -48,6 +47,7 @@ def numberReplacement(tmpResult):
       .replace('F', '5') \
       .replace('S', '5') \
       .replace('６', '6') \
+      .replace('G', '6') \
       .replace('e', '6') \
       .replace('E', '6') \
       .replace('７', '7')\

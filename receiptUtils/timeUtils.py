@@ -122,25 +122,29 @@ def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
   iMin=getMin(sim_pred)
 
   sTime = str(iYear)+sTime[4:]
-  if(iMonth>0 and sTime[5:7]=='01'):
+  # if(iMonth>0 and sTime[5:7]=='01'):
+  if(iMonth>0):
     sMonth=str(iMonth)
     if(iMonth<10):
         sMonth='0'+sMonth
     sTime=sTime[0:5]+sMonth+sTime[7:]
 
-  if(iDay>0 and sTime[8:10]=='01'):
+  # if(iDay>0 and sTime[8:10]=='01'):
+  if(iDay>0):
     sDay=str(iDay)
     if(iDay<10):
         sDay='0'+sDay
     sTime=sTime[0:8]+sDay+sTime[10:]
 
-  if(iHour>0 and sTime[11:13]=='00'):
+  # if(iHour>0 and sTime[11:13]=='00'):
+  if(iHour>0):
     sHour=str(iHour)
     if(iHour<10):
       sHour='0'+sHour
     sTime=sTime[0:11]+sHour+sTime[13:]
 
-  if(iMin>0 and sTime[14:16]=='00'):
+  # if(iMin>0 and sTime[14:16]=='00'):
+  if(iMin>0):
     sMin=str(iMin)
     if(iMin<10):
       sMin='0'+sMin
