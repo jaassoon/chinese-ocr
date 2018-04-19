@@ -72,7 +72,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
     xEnd=boxesX2[-1][2]
     previousY=0
     resultMap={'1_shopName':'none','2_city':'none',
-              '3_tel':'1234567890','4_year':'none',
+              '3_tel':'none','4_year':'none',
               '5_total':0,
               '6_receiptNO':'none',
               '7_staffNO':'none',
@@ -91,7 +91,6 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
               'pos_time':0,
               'pos_time_after':0,
               'pos_tax_after':0,
-              'pos_card_after':0,
               'pos_staff':0,
               'pos_ling':0,
               'pos_ling_after':0,
@@ -100,6 +99,7 @@ def draw_boxes(img,image_name,boxes,opt,adjust):
               'pos_subtotal':0,
               'pos_tax':0,
               'pos_card':0,
+              'pos_mny_after':0,
               'pos_card_after':0,
               'type_shop':0}
     for box in boxes:
@@ -143,27 +143,47 @@ def parseResult(result,resultMap,im_name):
         result[i][1]=sim_pred
 
     # TODO # get all key position
-    # ___________________________________________________step 2
+    # ___________________________________________________step 2__prepare_pos
     lingUtils.getPosLing(resultMap,result)
     pos_ling_after=resultMap['pos_ling_after']
 
-    # if (resultMap['pos_ling'] < resultMap['pos_time']):  # ling and then year,match family
-    #     resultMap['1_shopName'] = 'ファミリマート'
-    #     resultMap['type_shop'] = 1  # two shop type
+    for i in result:
+        if pos_ling_after>0 and i<=pos_ling_after:
+            continue
+        if resultMap['pos_mny_after']>0:
+            break
+        sim_pred = str(result[i][1])
+        if sim_pred.find('￥')>-1:
+            resultMap['pos_mny_after'] = i
+    pos_mny = resultMap['pos_mny_after']
 
     for i in result:
+        if pos_ling_after>0 and i<=pos_ling_after:
+            continue
+        if resultMap['pos_tax_after']>0:
+            break
+        sim_pred = str(result[i][1])
+        if (i > 8 and taxUtils.checkIsTaxStr(sim_pred)):
+            resultMap['pos_tax_after'] = i
+    pos_tax = resultMap['pos_tax_after']
+
+    if pos_tax>0 and pos_mny>0 and pos_mny>pos_tax:
+        pos_mny=0
+    if pos_tax>0 and pos_ling_after>0 and pos_tax<pos_ling_after:
+        pos_ling_after=0
+
+    for i in result:
+        if pos_mny>0 and i>=pos_mny:
+            break
+        if pos_tax>0 and i>=pos_tax:
+            break
+        if resultMap['pos_time_after']>0:
+            break
         sim_pred = str(result[i][1])
         if (i > 3 and resultMap['pos_time_after'] == 0):
             if (sim_pred.find('年') > -1):
                 resultMap['pos_time_after'] = i
-        if (i > 6 and resultMap['pos_time_after'] > 0):
-            if (sim_pred.find('-') == 1 and len(sim_pred) <= 6):
-                sim_pred = sim_pred.replace('l', '1')
-        if (i > 8 and taxUtils.checkIsTaxStr(sim_pred)):
-            resultMap['pos_tax_after'] = i
-
     pos_time = resultMap['pos_time_after']
-    pos_tax = resultMap['pos_tax_after']
 
     timeUtils.amendYear(result[pos_time][1], resultMap) #FIXME do nothing
     if (pos_time > 0):
@@ -171,17 +191,24 @@ def parseResult(result,resultMap,im_name):
         timeUtils.amendHour(result[pos_time][1], resultMap)
         timeUtils.amendHour(result[pos_time+1][1], resultMap)
 
+    if pos_ling_after>0 and pos_time>0 and pos_ling_after < pos_time:  # ling and then year,match family
+        resultMap['type_shop'] = 1  # two shop type
+
     for i in result:
+        if pos_ling_after>0 and i<=pos_ling_after:
+            continue
+        if pos_time>0 and i<=pos_time:
+            continue
         sim_pred = str(result[i][1])
         if (sim_pred.find('No.') > -1):
             staffNoUtils.getNo(sim_pred, resultMap, i)
         if (resultMap['pos_staff'] > 0):
             break
-
     pos_staff=resultMap['pos_staff']
-    if pos_staff>0:
+
+    if pos_staff>0: # receipt
         sim_pred = str(result[pos_staff-1][1])
-        staffNoUtils.getReceipt(sim_pred, resultMap, i)
+        staffNoUtils.getReceipt(sim_pred, resultMap, i) #get from current line same with staff
         if pos_staff+1<len(result):
             sim_pred = str(result[pos_staff+1][1]).strip()
             staffNoUtils.getReceipt(sim_pred, resultMap, i)
@@ -190,20 +217,9 @@ def parseResult(result,resultMap,im_name):
         sim_pred = str(result[i][1])
         if (i > pos_time and i < pos_tax - 3):
             categoryUtils.getCategoryAfter(sim_pred, resultMap, i)
-        # if (i > pos_tax + 1 and resultMap['pos_card_after'] == 0):
-        #     cardUtils.getCardNo(sim_pred, resultMap, i)
 
     cardUtils.getCardPos(resultMap,result)
-    pos_card_after=resultMap['pos_card_after']
-
-    if pos_card_after>0:
-        cardUtils.getCardNo(str(result[pos_card_after][1]), resultMap, pos_card_after)
-    if pos_card_after+1<len(result):
-        cardUtils.getCardNo(str(result[pos_card_after+1][1]), resultMap, pos_card_after+1)
-    if pos_card_after+2<len(result):
-        cardUtils.getCardNo(str(result[pos_card_after+2][1]), resultMap, pos_card_after+2)
-    if pos_card_after>1:
-        cardUtils.getCardNo(str(result[pos_card_after-1][1]), resultMap, pos_card_after-1)
+    cardUtils.parseCard(resultMap, result)
 
     resultMap['9_category'] = len(resultMap['suffix_catPrice'])
     catTotalMny = 0
@@ -266,12 +282,15 @@ def parseResult(result,resultMap,im_name):
             cityUtils.getCity(sim_pred, resultMap)
             if (resultMap['2_city'] != 'none'):
                 break
+            if pos_ling_after>0 and i>pos_ling_after:
+                break
             if pos_time>0 and i>pos_time:
                 break
             if pos_tax>0 and i>pos_tax:
                 break
             if pos_staff>0 and i>pos_staff:
                 break
+
     if (resultMap['1_shopName'] == 'ファミリマート'):
         if (resultMap['pos_time'] + 1 == resultMap['pos_staff']):
             for i in range(pos_time + 1, pos_time + 4):
@@ -283,21 +302,27 @@ def parseResult(result,resultMap,im_name):
                 if (len(sim_pred) <= 8):
                     staffNoUtils.amendStaff(sim_pred, resultMap, i)
 
-    if len(resultMap['3_tel'].strip()) == 0:
-        resultMap['3_tel'] = '1234567890'
-    if len(resultMap['2_city'].strip()) == 0:
-        resultMap['2_city'] = '東京都'
-    if resultMap['7_staffNO'] == 'none':
-        resultMap['7_staffNO_for_test'] = '001'
-    if resultMap['6_receiptNO'] == 'none':
-        resultMap['6_receiptNO_for_test'] = '1-1234'
+    # set default at last--------------vvvvv
     if pos_tax>0 and \
         (result[pos_tax][1].find('づ')>-1 \
          or result[pos_tax][1].find('う')>-1):
         resultMap['1_shopName']='サンクス'
     if resultMap['1_shopName']=='none':
         resultMap['1_shopName'] = 'サンクス'
-    for key in resultMap:
+
+    if len(resultMap['2_city'].strip()) == 0:
+        resultMap['2_city'] = '東京都'
+    if len(resultMap['3_tel'].strip()) == 'none':
+        resultMap['test_tel'] = 'unknown_tel'
+
+    if resultMap['6_receiptNO'] == 'none':
+        resultMap['test_receiptNO'] = 'unknown_receipt'
+    if resultMap['7_staffNO'] == 'none':
+        resultMap['test_staffNO'] = 'unknown_staff'
+    if resultMap['8_pointcard'] == 'none':
+        resultMap['test_Card'] = 'unknown_card'
+    # --------------------^^^^^^^
+    for key in sorted(resultMap):
         print('{} = {}'.format(key,resultMap[key]))
 
     base_name = im_name.split('/')[-1]

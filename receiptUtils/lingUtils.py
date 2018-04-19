@@ -4,6 +4,8 @@ import re
 
 def getPosLing(resultMap,result):
   for i in result:
+      if resultMap['pos_ling_after'] > 0:
+          break
       if result[i][1].find('領 証') > -1 \
           or result[i][1].find('領収') > -1 \
           or result[i][1].find('収証') > -1 \

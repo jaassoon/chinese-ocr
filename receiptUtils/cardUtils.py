@@ -1,10 +1,22 @@
 #coding:utf-8
 from receiptUtils import numberUtils
 import re
+
+def parseCard(resultMap, result):
+    pos_card_after = resultMap['pos_card_after']
+    if pos_card_after>0:
+        getCardNo(str(result[pos_card_after][1]), resultMap, pos_card_after)
+        if pos_card_after+1<len(result):
+            getCardNo(str(result[pos_card_after+1][1]), resultMap, pos_card_after+1)
+        if pos_card_after+2<len(result):
+            getCardNo(str(result[pos_card_after+2][1]), resultMap, pos_card_after+2)
+    if pos_card_after>1:
+        getCardNo(str(result[pos_card_after-1][1]), resultMap, pos_card_after-1)
+
 def getCardNo(tmpResult,resultMap,i):
   print('input card {}'.format(tmpResult))
   tmpResult=tmpResult.replace('冷','*').replace('米','*').replace('x','*').replace('深','*').replace('氷','*')\
-      .replace('凍','*').replace('法','*').replace('※','*')
+      .replace('凍','*').replace('法','*').replace('※','*').replace('Q','0')
   if (tmpResult.find('****') > -1 and (tmpResult.find('TP') == -1 or \
     tmpResult.find('ト') == -1)):
     tmpResult=numberUtils.numberReplacement(tmpResult)
@@ -18,17 +30,14 @@ def getCardNo(tmpResult,resultMap,i):
         tmpHead='1234'
     if len(tmpHead)<4:
         tmpHead=str(9)*(4-len(tmpHead))+tmpHead
-        # tmpHead=str(1)*(4-len(tmpHead))+tmpHead
     strList=re.findall(r'\d+', tmpTail)
     tmpTail=''.join(strList)
     if tmpTail=='':
-        tmpTail='1234'
+        tmpTail='0000'
     if len(tmpTail)<4:
         tmpTail=str(1)*(4-len(tmpTail))+tmpTail
 
     tmpResult=tmpHead+'********'+tmpTail
-    # if(tmpHead=='' or tmpTail==''):
-    #   return
     resultMap['8_pointcard'] = tmpResult
     resultMap['pos_card_after']=i
     print('output card-------------  {}'.format(tmpResult))

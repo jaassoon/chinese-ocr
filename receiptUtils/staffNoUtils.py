@@ -56,16 +56,20 @@ def getReceipt(sim_pred,resultMap,i):
     sim_pred=jaconv.z2h(sim_pred,digit=True, ascii=True)
     if sim_pred.find('-')==-1:
         return
-    sim_pred = numberUtils.numberReplacement(sim_pred)
+    # sim_pred = numberUtils.numberReplacement(sim_pred)
     if(sim_pred.find('-')==0):
         sim_pred=str(1)+sim_pred
     tmpList=sim_pred.split('-')
     tmpHead=tmpList[0]
+    tmpHead=tmpHead[-1]
+    tmpHead=numberUtils.numberReplacement(tmpHead)
+
     lstHead=re.findall(r'\d+', tmpHead)
     tmpHead=''.join(lstHead)
     if(tmpHead==''):
         tmpHead='1'
     tmpTail=tmpList[-1][:4]
+    tmpTail = numberUtils.numberReplacement(tmpTail)
     lstTail=re.findall(r'\d+', tmpTail)
     tmpTail=''.join(lstTail)
     if tmpTail=='':
