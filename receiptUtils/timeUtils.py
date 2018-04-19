@@ -131,6 +131,8 @@ def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
 
   # if(iDay>0 and sTime[8:10]=='01'):
   if(iDay>0):
+    if iMonth==2 and iDay>=29:
+        iDay=28
     sDay=str(iDay)
     if(iDay<10):
         sDay='0'+sDay
