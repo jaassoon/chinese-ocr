@@ -105,6 +105,7 @@ def amendHour(sim_pred,resultMap):#2017-11-01 00:49:00
      or sim_pred.find('収')>-1 \
      or sim_pred.find('ｰ')>-1 \
      or sim_pred.find('責')>-1 \
+     or sim_pred.find('￥')>-1 \
      or sim_pred.find('No')>-1 \
      or sim_pred.find('NO')>-1 \
      or sim_pred.find('書')>-1 \
@@ -171,8 +172,12 @@ def getTimeStr(sim_pred,resultMap,i):
         return
     sim_pred=replaceTime(sim_pred)
 
+    iMonth=getMonth(sim_pred)
+    iDay=getDay(sim_pred)
+    if iMonth==2 and iDay>=29:
+        iDay=28
     new_date = datetime.datetime(getYear(sim_pred),getMonth(sim_pred)\
-      ,getDay(sim_pred),getHour(sim_pred),getMin(sim_pred))
+      ,iDay,getHour(sim_pred),getMin(sim_pred))
     resultMap['4_year']=str(new_date)
     print('output year {}'.format(resultMap['4_year']))
     resultMap['pos_time']=i

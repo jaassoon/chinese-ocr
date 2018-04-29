@@ -48,7 +48,8 @@ def getDrawboxResult(origin_result,resultMap):
         timeUtils.getTimeStr(sim_pred, resultMap, i)
 
     pos_tax=resultMap['pos_tax']
-    taxUtils.getTax(origin_result[pos_tax],resultMap,pos_tax)
+    if pos_tax>0:
+      taxUtils.getTax(origin_result[pos_tax],resultMap,pos_tax)
     # for i, sim_pred in enumerate(origin_result):#
     #   if(sim_pred.find('No.')>-1):
     #     staffNoUtils.getNo(sim_pred, resultMap,i)
@@ -322,6 +323,8 @@ def parseResult(result,resultMap,im_name):
         resultMap['test_receiptNO'] = 'unknown_receipt'
     if resultMap['7_staffNO'] == 'none':
         resultMap['test_staffNO'] = 'unknown_staff'
+    if len(resultMap['7_staffNO']) == 0:
+        resultMap['7_staffNO'] = 'none'
     if resultMap['8_pointcard'] == 'none':
         resultMap['test_Card'] = 'unknown_card'
     # --------------------^^^^^^^
